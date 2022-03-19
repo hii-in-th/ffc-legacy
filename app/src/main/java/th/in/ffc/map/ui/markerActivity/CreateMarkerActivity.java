@@ -2,9 +2,9 @@ package th.in.ffc.map.ui.markerActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBar.Tab;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBar.Tab;
 import com.ibus.phototaker.PhotoTaker;
 import th.in.ffc.R;
 import th.in.ffc.app.FFCFragmentActivity;

@@ -28,7 +28,7 @@ package th.in.ffc.person;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import th.in.ffc.app.form.EditFormFragment;
 import th.in.ffc.provider.PersonProvider.Person;
 

@@ -6,7 +6,7 @@ import android.app.FragmentManager;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.PermissionChecker;
+import androidx.core.content.PermissionChecker;
 import android.util.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

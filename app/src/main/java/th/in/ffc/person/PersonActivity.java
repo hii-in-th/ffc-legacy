@@ -29,7 +29,7 @@ package th.in.ffc.person;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.text.TextUtils;
 import th.in.ffc.app.form.EditFormActivity;
 import th.in.ffc.provider.PersonProvider.Person;

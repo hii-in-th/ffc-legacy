@@ -26,15 +26,24 @@
 
 package th.in.ffc;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.os.Build.VERSION.SDK_INT;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.*;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Process;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.*;
@@ -61,7 +70,6 @@ public class MainActivity extends FFCGridActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
         getSupportActionBar().setTitle(R.string.app_name);
         getSupportActionBar().setSubtitle(R.string.app_version);
 
@@ -246,6 +254,7 @@ public class MainActivity extends FFCGridActivity {
             text.setMovementMethod(new ScrollingMovementMethod());
             text.setText(txt);
         }
+
     }
 
 }
