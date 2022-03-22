@@ -1,10 +1,12 @@
 package com.blayzupe.phototaker;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -12,6 +14,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +34,7 @@ public class PhotoTaker {
     public static final int CROP_IMAGE = 10001;
     public static final int PICK_FROM_FILE = 10002;
     public static final String TAG = "PhotoTaker";
+    private static final int CAMERA_PERM_CODE = 101 ;
 
     public int outputX = 300;
     public int outputY = 360;
@@ -124,8 +131,7 @@ public class PhotoTaker {
                     Log.d(TAG, "blayzupe tempfile=" + tempFile.getAbsolutePath());
 
                     // Create MediaUriScanner to find your Content URI of File
-                    MediaUriFinder.create(mActivity, tempFile.getAbsolutePath(),
-                            mScanner);
+//                    MediaUriFinder.create(mActivity, tempFile.getAbsolutePath(), mScanner);
                     break;
                 case PICK_FROM_FILE:
                     Log.e(TAG, "blayzupe PICK_IMAGE");
@@ -237,8 +243,9 @@ public class PhotoTaker {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra("outputFormat", CompressFormat.JPEG.toString());
             intent.putExtra("return-data", true);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(temp));
-
+            // intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(temp));
+            Uri uriTmp = FileProvider.getUriForFile(mActivity.getApplicationContext(), mActivity.getApplicationContext().getApplicationContext().getPackageName() + ".provider", temp);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uriTmp);
             mActivity.startActivityForResult(intent, IMAGE_CAPTURE);
             return true;
         } catch (ActivityNotFoundException anfe) {
@@ -246,7 +253,19 @@ public class PhotoTaker {
             return false;
         }
     }
+    private void askCameraPermission(){
+        if(ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mActivity,new String[] {Manifest.permission.CAMERA},IMAGE_CAPTURE );
+        }else {
+            openCamera();
+//            doImageCapture();
+        }
+    }
 
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        mActivity.startActivityForResult(intent,IMAGE_CAPTURE);
+    }
     public boolean doPickImage() {
         try {
             Log.d(TAG, "blayzupe doPickImage() START");
@@ -291,7 +310,8 @@ public class PhotoTaker {
             public void onClick(DialogInterface dialog, int item) {
                 switch (item) {
                     case 0:
-                        doImageCapture();
+                        // doImageCapture();
+                        askCameraPermission();
                         break; // Take from Camera
                     case 1:
                         doPickImage();

@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import androidx.core.content.FileProvider;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -223,8 +225,9 @@ public class PhotoPerson {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra("outputFormat", CompressFormat.JPEG.toString());
             intent.putExtra("return-data", true);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(temp));
-
+//            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(temp));
+            Uri uriTmp = FileProvider.getUriForFile(mActivity.getApplicationContext(), mActivity.getApplicationContext().getApplicationContext().getPackageName() + ".provider", temp);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uriTmp);
             mActivity.startActivityForResult(intent, IMAGE_CAPTURE);
             return true;
         } catch (ActivityNotFoundException anfe) {

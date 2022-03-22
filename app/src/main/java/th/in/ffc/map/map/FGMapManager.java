@@ -349,7 +349,7 @@ public class FGMapManager implements OnClickListener {
     }
 
     private void initialButtonZoomControl() {
-        this.mapController.setZoom(18);
+//        this.mapController.setZoom(18);
 
         FGActivity fgActivity = this.fgSystemManager.getFGActivity();
         MapFragment mf = (MapFragment) fgActivity.getSupportFragmentManager().findFragmentById(R.id.map_fragment_id);

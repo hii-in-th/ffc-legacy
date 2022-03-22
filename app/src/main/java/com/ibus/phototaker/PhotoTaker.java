@@ -1,10 +1,12 @@
 package com.ibus.phototaker;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -13,6 +15,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import th.in.ffc.map.FGActivity;
 import th.in.ffc.map.value.MARKER_TYPE;
 
@@ -32,6 +39,7 @@ public class PhotoTaker {
     public static final int CROP_IMAGE = 0x00003012;
     public static final int PICK_FROM_FILE = 0x00004012;
     public static final String TAG = "PhotoTaker";
+    private static final int CAMERA_PERM_CODE = 101 ;
 
     public int outputX = 240;
     public int outputY = 240;
@@ -53,7 +61,7 @@ public class PhotoTaker {
 
     public PhotoTaker(Activity activity) {
         //this(activity, "/sdcard/", "PhotoTaker.jpg");
-        this(activity, "/mnt/sdcard/Android/data/th.in.ffc/temps/", "PhotoTaker.jpg");
+        this(activity, "/sdcard/Android/data/th.in.ffc/temps/", "PhotoTaker.jpg");
 
     }
 
@@ -234,7 +242,35 @@ public class PhotoTaker {
             return false;
         }
     }
+    private void askCameraPermission(){
+        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.CAMERA},CAMERA_PERM_CODE );
+        }else {
+//            openCamera();
+            doImageCapture();
+        }
+    }
 
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        mActivity.startActivityForResult(intent,CAMERA_PERM_CODE);
+    }
+
+    //    private fun askCameraPermission() {
+//        if(ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this@MainActivity,
+//            arrayOf(Manifest.permission.CAMERA), CAMERA_PERM_CODE)
+//        }
+//        else {
+//            openCamera()
+//        }
+//    }
+//
+//    private fun openCamera() {
+//        var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        Toast.makeText(this,"Open camera",Toast.LENGTH_SHORT).show();
+//        startActivityForResult(intent,CAMERA_PERM_CODE)
+//    }
     public boolean doPickImage() {
         try {
             Log.d(TAG, "blayzupe doPickImage() START");
@@ -279,6 +315,7 @@ public class PhotoTaker {
                 switch (item) {
                     case 0:
                         doImageCapture();
+                        askCameraPermission();
                         break; // Take from Camera
                     case 1:
                         doPickImage();
@@ -319,6 +356,7 @@ public class PhotoTaker {
         if (camera_temp_file == null)
             return null;
         return Uri.fromFile(camera_temp_file);
+        //return FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".provider", camera_temp_file);
     }
 
     public File getCameraTempFile() {

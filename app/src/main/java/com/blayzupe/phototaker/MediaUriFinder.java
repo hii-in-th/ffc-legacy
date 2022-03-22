@@ -13,11 +13,16 @@ public class MediaUriFinder implements MediaScannerConnectionClient {
 
     public MediaUriFinder(Activity activity, String filePath,
                           MediaScannedListener listener) {
-        msc = new android.media.MediaScannerConnection(
-                activity.getApplicationContext(), this);
-        msc.connect();
-        mFilePath = filePath;
-        mListener = listener;
+        try {
+            msc = new android.media.MediaScannerConnection(
+                    activity.getApplicationContext(), this);
+            msc.connect();
+            mFilePath = filePath;
+            mListener = listener;
+        }
+        catch (Exception e){
+            Log.d(">> MediaUriFinder <<",e.getMessage().toString());
+        }
     }
 
     @Override

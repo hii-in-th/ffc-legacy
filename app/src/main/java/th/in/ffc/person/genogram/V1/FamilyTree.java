@@ -654,7 +654,7 @@ public class FamilyTree extends FFCFragmentActivity {
         iv = null;
         InputStream stream;
         try {
-            stream = new FileInputStream("/mnt/sdcard/mydata/" + path);
+            stream = new FileInputStream("/sdcard/mydata/" + path);
             Bitmap bitmap = BitmapFactory.decodeStream(stream, null, null);
             stream.close();
             stream = null;

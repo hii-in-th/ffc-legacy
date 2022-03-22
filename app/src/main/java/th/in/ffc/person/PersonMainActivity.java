@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
 import androidx.loader.app.LoaderManager.LoaderCallbacks;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -356,7 +357,7 @@ public class PersonMainActivity extends FFCActionBarTabsPagerActivity implements
                     addNotification(LOAD_DEATH, R.drawable.ic_stat_death, date, msg);
                 }
                 c.close();
-                getSupportLoaderManager().initLoader(LOAD_CHRONIC, null, this);
+                LoaderManager.getInstance(this).initLoader(LOAD_CHRONIC, null, this);
                 break;
             case LOAD_CHRONIC:
                 if (c.moveToFirst()) {
@@ -374,7 +375,7 @@ public class PersonMainActivity extends FFCActionBarTabsPagerActivity implements
                     } while (c.moveToNext());
                 }
                 c.close();
-                getSupportLoaderManager().initLoader(LOAD_HANDICAP, null, this);
+                LoaderManager.getInstance(this).initLoader(LOAD_HANDICAP, null, this);
                 break;
 
             case LOAD_HANDICAP:
@@ -453,10 +454,11 @@ public class PersonMainActivity extends FFCActionBarTabsPagerActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        getSupportLoaderManager().destroyLoader(LOAD_CHRONIC);
-        getSupportLoaderManager().destroyLoader(LOAD_DEATH);
-        getSupportLoaderManager().destroyLoader(LOAD_HANDICAP);
-        getSupportLoaderManager().destroyLoader(LOAD_PERSON);
+
+        LoaderManager.getInstance(this).destroyLoader(LOAD_CHRONIC);
+        LoaderManager.getInstance(this).destroyLoader(LOAD_DEATH);
+        LoaderManager.getInstance(this).destroyLoader(LOAD_HANDICAP);
+        LoaderManager.getInstance(this).destroyLoader(LOAD_PERSON);
     }
 
 }

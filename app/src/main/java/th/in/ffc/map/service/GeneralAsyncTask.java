@@ -49,11 +49,11 @@ public class GeneralAsyncTask extends AsyncTask<Runnable, String, String> {
 //				ft.commit();
 //			}
 //		}else{
-        mProgressDialog = new ProgressDialog(act);
-        mProgressDialog.setMessage(msg);
-        mProgressDialog.setCancelable(false);
-        if (!mProgressDialog.isShowing())
-            mProgressDialog.show();
+//        mProgressDialog = new ProgressDialog(act);
+//        mProgressDialog.setMessage(msg);
+//        mProgressDialog.setCancelable(false);
+//        if (!mProgressDialog.isShowing())
+//            mProgressDialog.show();
 //		}
     }
 
