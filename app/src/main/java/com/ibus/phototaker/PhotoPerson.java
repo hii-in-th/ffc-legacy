@@ -71,12 +71,12 @@ public class PhotoPerson {
     public void setOutput(String path, String name) {
         mDirectory = createDirectory(path);
         mOutput = name;
-        mTemp = TEMP_PREFIX.concat(name);
+        mTemp = name.indexOf("tmp_")>-1?name:TEMP_PREFIX.concat(name);
     }
 
     public void setOutput(String name) {
         mOutput = name;
-        mTemp = TEMP_PREFIX.concat(name);
+        mTemp = name.indexOf("tmp_")>-1?name:TEMP_PREFIX.concat(name);
     }
 
     public void setCropfinishListener(OnCropFinishListener listener) {

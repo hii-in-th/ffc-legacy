@@ -28,7 +28,9 @@ package th.in.ffc.person;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.icu.text.RelativeDateTimeFormatter;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -37,6 +39,8 @@ import androidx.loader.app.LoaderManager.LoaderCallbacks;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.appcompat.app.ActionBar;
+
+import android.os.Environment;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +50,8 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.blayzupe.phototaker.ImageResizer;
 import com.blayzupe.phototaker.PhotoTaker;
 import com.blayzupe.phototaker.PhotoTaker.OnCropFinishListener;
@@ -70,6 +76,7 @@ import th.in.ffc.util.Log;
 import th.in.ffc.util.ThaiCitizenID;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * add description here! please
@@ -221,7 +228,7 @@ public class PersonMainActivity extends FFCActionBarTabsPagerActivity implements
     public void doSetupImage() {
 
         String name = getPcuCode().concat(mPid).concat("_720p.jpg");
-        File pick = new File(FamilyFolderCollector.PHOTO_DIRECTORY_PERSON, name);
+        File pick = new File(FamilyFolderCollector.PHOTO_DIRECTORY_PERSON, name.indexOf("tmp_")>0?name:"tmp_"+name);
         mPhotoPath = pick.getAbsolutePath();
 
         mImage = (ImageView) findViewById(R.id.image);
@@ -246,15 +253,15 @@ public class PersonMainActivity extends FFCActionBarTabsPagerActivity implements
                 return true;
             }
         });
-
-        if (pick.exists())
-            mImage.setImageDrawable(Drawable.createFromPath(mPhotoPath));
-
+        if (pick.exists()) {
+            mImage.setImageBitmap( BitmapFactory.decodeFile(mPhotoPath));
+        }
         mPhotoTaker = new PhotoTaker(this,
                 FamilyFolderCollector.PHOTO_DIRECTORY_PERSON, name);
         mPhotoTaker.setCropfinishListener(this);
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -267,6 +274,7 @@ public class PersonMainActivity extends FFCActionBarTabsPagerActivity implements
         // FamilyFolderCollector.PHOTO_DIRECTORY_PERSON, getPcuCode()
         // .concat(getIntent().getData().getLastPathSegment())
         // .concat("_720p.jpg"));
+        mPhotoTaker.setContext(getApplicationContext());
         mPhotoTaker.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -318,85 +326,93 @@ public class PersonMainActivity extends FFCActionBarTabsPagerActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> l, Cursor c) {
-
-        switch (l.getId()) {
-            case LOAD_PERSON:
-                if (c.moveToFirst()) {
-                    mPcuCodePerson = c.getString(c
-                            .getColumnIndex(Person.PCUPERSONCODE));
-                    if (c.getInt(c.getColumnIndex(Person.SEX)) == 2) {
-                        Date cur = Date.newInstance(DateTime.getCurrentDate());
-                        Date born = Date.newInstance(c.getString(c
-                                .getColumnIndex(Person.BIRTH)));
-                        if (born != null) {
-                            AgeCalculator cal = new AgeCalculator(cur, born);
-                            Date age = cal.calulate();
-                            if (age.year >= 11 && age.year <= 45)
-                                mAdapter.addTab("Women", WomenView.class, mArgs);
+        try {
+            switch (l.getId()) {
+                case LOAD_PERSON:
+                    if (c.moveToFirst()) {
+                        mPcuCodePerson = c.getString(c
+                                .getColumnIndex(Person.PCUPERSONCODE));
+                        if (c.getInt(c.getColumnIndex(Person.SEX)) == 2) {
+                            Date cur = Date.newInstance(DateTime.getCurrentDate());
+                            Date born = Date.newInstance(c.getString(c
+                                    .getColumnIndex(Person.BIRTH)));
+                            if (born != null) {
+                                AgeCalculator cal = new AgeCalculator(cur, born);
+                                Date age = cal.calulate();
+                                if (age.year >= 11 && age.year <= 45)
+                                    mAdapter.addTab("Women", WomenView.class, mArgs);
+                            }
                         }
+
+                        doSetupActionBar(
+                                c.getString(c.getColumnIndex(Person.FULL_NAME)),
+                                ThaiCitizenID.parse(c.getString(c
+                                        .getColumnIndex(Person.CITIZEN_ID))));
+                    }
+                    break;
+                case LOAD_DEATH:
+                    try {
+                        if (c.moveToFirst()) {
+                            String date = c.getString(0);
+                            if (TextUtils.isEmpty(date))
+                                date = getString(R.string.not_available);
+                            String msg = c.getString(1);
+                            String name = c.getString(2);
+                            if (TextUtils.isEmpty(name)) {
+                                name = c.getString(3);
+                            }
+                            if (!TextUtils.isEmpty(name))
+                                msg = msg + " : " + name;
+                            addNotification(LOAD_DEATH, R.drawable.ic_stat_death, date, msg);
+                        }
+//                        c.close();
+                        LoaderManager.getInstance(this).initLoader(LOAD_CHRONIC, null, this);
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), "LOAD_DEATH:" + e.getMessage(), Toast.LENGTH_LONG);
+                    }
+                    break;
+                case LOAD_CHRONIC:
+                    if (c.moveToFirst()) {
+                        do {
+                            String msg = c.getString(1);
+                            String name = c.getString(2);
+                            if (TextUtils.isEmpty(name)) {
+                                name = c.getString(3);
+                            }
+                            if (!TextUtils.isEmpty(name))
+                                msg = msg + " : " + name;
+
+                            addNotification(LOAD_CHRONIC, R.drawable.ic_stat_chronic,
+                                    c.getString(0), msg);
+                        } while (c.moveToNext());
+                    }
+//                    c.close();
+                    LoaderManager.getInstance(this).initLoader(LOAD_HANDICAP, null, this);
+                    break;
+
+                case LOAD_HANDICAP:
+                    if (c.moveToFirst()) {
+                        do {
+                            String msg = c.getString(1);
+                            Uri unableType = Uri.withAppendedPath(PersonIncomplete.CONTENT_URI, msg);
+                            Cursor u = getContentResolver().query(unableType, new String[]{PersonIncomplete.NAME},
+                                    null, null, PersonIncomplete.DEFAULT_SORTING);
+                            if (u.moveToFirst()) {
+                                msg += " : " + u.getString(0);
+                            }
+                            addNotification(LOAD_HANDICAP, R.drawable.ic_stat_handicap,
+                                    c.getString(0), msg);
+                        } while (c.moveToNext());
                     }
 
-                    doSetupActionBar(
-                            c.getString(c.getColumnIndex(Person.FULL_NAME)),
-                            ThaiCitizenID.parse(c.getString(c
-                                    .getColumnIndex(Person.CITIZEN_ID))));
-                }
-                break;
-            case LOAD_DEATH:
-                if (c.moveToFirst()) {
-                    String date = c.getString(0);
-                    if (TextUtils.isEmpty(date))
-                        date = getString(R.string.not_available);
-                    String msg = c.getString(1);
-                    String name = c.getString(2);
-                    if (TextUtils.isEmpty(name)) {
-                        name = c.getString(3);
-                    }
-                    if (!TextUtils.isEmpty(name))
-                        msg = msg + " : " + name;
-                    addNotification(LOAD_DEATH, R.drawable.ic_stat_death, date, msg);
-                }
-                c.close();
-                LoaderManager.getInstance(this).initLoader(LOAD_CHRONIC, null, this);
-                break;
-            case LOAD_CHRONIC:
-                if (c.moveToFirst()) {
-                    do {
-                        String msg = c.getString(1);
-                        String name = c.getString(2);
-                        if (TextUtils.isEmpty(name)) {
-                            name = c.getString(3);
-                        }
-                        if (!TextUtils.isEmpty(name))
-                            msg = msg + " : " + name;
-
-                        addNotification(LOAD_CHRONIC, R.drawable.ic_stat_chronic,
-                                c.getString(0), msg);
-                    } while (c.moveToNext());
-                }
-                c.close();
-                LoaderManager.getInstance(this).initLoader(LOAD_HANDICAP, null, this);
-                break;
-
-            case LOAD_HANDICAP:
-                if (c.moveToFirst()) {
-                    do {
-                        String msg = c.getString(1);
-                        Uri unableType = Uri.withAppendedPath(PersonIncomplete.CONTENT_URI, msg);
-                        Cursor u = getContentResolver().query(unableType, new String[]{PersonIncomplete.NAME},
-                                null, null, PersonIncomplete.DEFAULT_SORTING);
-                        if (u.moveToFirst()) {
-                            msg += " : " + u.getString(0);
-                        }
-                        addNotification(LOAD_HANDICAP, R.drawable.ic_stat_handicap,
-                                c.getString(0), msg);
-                    } while (c.moveToNext());
-                }
-
-                setSupportProgressBarIndeterminateVisibility(false);
-                break;
+                    setSupportProgressBarIndeterminateVisibility(false);
+                    break;
+            }
         }
-
+        catch (Exception e) {
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
+            Log.d("ERR->>",e.getMessage());
+        }
     }
 
     @Override

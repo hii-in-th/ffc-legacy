@@ -60,14 +60,14 @@ android {
             versionNameSuffix " debug"
             ext.enableCrashlytics = false
             ext.alwaysUpdateBuildId = false
-            manifestPlaceholders = [google_map_key: 'AIzaSyC9K6xSWv4pGnTTmxzpYziOm_5q02yOI20']
+            manifestPlaceholders = [google_map_key: 'AIzaSyDFnqKppKcMpTfZZhSXP1rIn2rrtd89hr8']
         }
 
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            manifestPlaceholders = [google_map_key: 'AIzaSyBxLlvsh23x0AQkkVPEF1eP5aSKIVwgCY8']
+            manifestPlaceholders = [google_map_key: 'AIzaSyDFnqKppKcMpTfZZhSXP1rIn2rrtd89hr8']
         }
     }
 
@@ -88,13 +88,18 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 //    compile 'com.android.support:appcompat-v7:25.0.1'
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation "com.google.android.gms:play-services-maps:10.0.1"
-    implementation 'com.google.android.gms:play-services-analytics:10.0.1'
-    implementation 'org.osmdroid:osmdroid-android:5.5:release@aar'
-    implementation 'org.osmdroid:osmdroid-third-party:5.5:release@aar'
+    implementation "com.google.android.gms:play-services-maps:18.0.2"
+    implementation 'com.google.android.gms:play-services-analytics:18.0.1'
+
+//    implementation 'org.osmdroid:osmdroid-android:5.5:release@aar'
+//    implementation 'org.osmdroid:osmdroid-third-party:5.5:release@aar'
 //    implementation 'me.piruin:quickaction:2.4.3'
     implementation 'com.github.piruin:quickaction:2.4.3'
+    implementation 'org.osmdroid:osmdroid-android:6.1.10'
+    implementation 'com.google.android.libraries.places:places:2.1.0'
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') { transitive = true; }
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'

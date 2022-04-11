@@ -1,29 +1,48 @@
 package th.in.ffc.map.map;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import org.osmdroid.api.IMapController;
-import org.osmdroid.google.wrapper.MyLocationOverlay;
-import org.osmdroid.tileprovider.MapTile;
+//import org.osmdroid.google.wrapper.MyLocationOverlay;
+//import org.osmdroid.tileprovider.MapTile;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.TilesOverlay;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
+
 import th.in.ffc.R;
 import th.in.ffc.map.FGActivity;
 import th.in.ffc.map.MapFragment;
+import th.in.ffc.map.ResourceProxyImpl;
+import th.in.ffc.map.UserResourceProxyImpl;
 import th.in.ffc.map.overlay.FGOverlay;
 import th.in.ffc.map.overlay.ItemGestureListener;
 import th.in.ffc.map.system.FGSystemManager;
@@ -44,8 +63,8 @@ public class FGMapManager implements OnClickListener {
     private FGSystemManager fgSystemManager;
 
     private MapView mapView;
-    private MapController mapController;
-    private MyLocationOverlay mLocation;
+    private IMapController mapController;
+    private MyLocationNewOverlay mLocation;
     private ItemGestureListener gesture;
     private ItemizedIconOverlay<Spot> markers = null;
 
@@ -66,6 +85,7 @@ public class FGMapManager implements OnClickListener {
     private static int currentMapStyle = -1;
 
     private static boolean[] group_check;
+    private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     public FGMapManager(FGSystemManager fgSystemManager) {
         this.fgSystemManager = fgSystemManager;
@@ -77,56 +97,57 @@ public class FGMapManager implements OnClickListener {
         MapFragment mf = (MapFragment) fgActivity.getSupportFragmentManager().findFragmentById(R.id.map_fragment_id);
         this.mapView = (MapView) mf.getView().findViewById(R.id.mapview);
         this.gesture = new ItemGestureListener(fgSystemManager);
-
         // Download Google API
+        requirePermission();
+       InputStream target = null;
 
-        InputStream target = null;
+       File previous = this.fgSystemManager.getFGActivity().getFileStreamPath("map-loaded");
+       String filename_current = downloadFile();
 
-        File previous = this.fgSystemManager.getFGActivity().getFileStreamPath("map-loaded");
-        String filename_current = downloadFile();
+       if (filename_current != null) {
+           File current = this.fgSystemManager.getFGActivity().getFileStreamPath(filename_current);
+           previous.delete();
+           current.renameTo(previous);
 
-        if (filename_current != null) {
-            File current = this.fgSystemManager.getFGActivity().getFileStreamPath(filename_current);
-            previous.delete();
-            current.renameTo(previous);
+           Log.d("TAG!", "Download file is completed");
+           try {
+               target = new FileInputStream(previous);
+           } catch (FileNotFoundException e) {
+               e.printStackTrace();
+           }
+       } else if (previous.exists()) {
 
-            Log.d("TAG!", "Download file is completed");
-            try {
-                target = new FileInputStream(previous);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else if (previous.exists()) {
+           Log.d("TAG!", "Download file is NOT completed, use the previous one");
+           try {
+               target = new FileInputStream(previous);
+           } catch (FileNotFoundException e) {
+               e.printStackTrace();
+           }
+       } else {
 
-            Log.d("TAG!", "Download file is NOT completed, use the previous one");
-            try {
-                target = new FileInputStream(previous);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
+           Log.d("TAG!", "No previous file, cannot download, fall back! fall back!");
+           try {
+               target = this.fgSystemManager.getFGActivity().getAssets().open("maps-fallback");
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
 
-            Log.d("TAG!", "No previous file, cannot download, fall back! fall back!");
-            try {
-                target = this.fgSystemManager.getFGActivity().getAssets().open("maps-fallback");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        this.tokenize(target);
+       this.tokenize(target);
 
         // ----
 
-        //markers = new ItemizedIconOverlay<Spot>(new ArrayList<Spot>(), this.gesture, new ResourceProxyImpl(fgActivity.getApplicationContext()));
+//        markers = new ItemizedIconOverlay<Spot>(new ArrayList<Spot>(), this.gesture, new ResourceProxyImpl(fgActivity.getApplicationContext()));
+        markers = new ItemizedIconOverlay<Spot>(new ArrayList<Spot>(), this.gesture, this.mapView.getContext());
 
         this.emptyOverlay = new FGOverlay(fgSystemManager);
 
-        this.mapView.setMultiTouchControls(true);
 
-        //this.mapController = this.mapView.getController();
+        this.mapController = this.mapView.getController();
+//        Context ctx = this.getMapView().getContext();
+//        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
-        this.setMapStyle(FinalValue.INT_SATELLITE_OVERLAY);
+        setMapStyle(FinalValue.INT_SATELLITE_OVERLAY);
 
         this.mapView.setUseDataConnection(true);
 
@@ -134,7 +155,7 @@ public class FGMapManager implements OnClickListener {
 
         this.initializeCurrentLocation();
 
-        // this.initialImageButtonMenu();
+        //this.initialImageButtonMenu();
 
         checkGPS();
     }
@@ -174,24 +195,25 @@ public class FGMapManager implements OnClickListener {
 
         this.clearCahce();
         List<Overlay> stackOverlay = this.mapView.getOverlays();
-        stackOverlay.clear();
+//        stackOverlay.clear();
+        Context ctx = this.getMapView().getContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         switch (newStyle) {
             case FinalValue.INT_SATELLITE:
-                mapView.setTileSource(this.initializeSatellite());
+//                mapView.setTileSource(this.initializeSatellite());
                 break;
             case FinalValue.INT_SATELLITE_OVERLAY:
-                mapView.setTileSource(this.initializeSatellite());
-                stackOverlay.add(this.initializeGoogleOverlay());
+//                mapView.setTileSource(this.initializeSatellite());
                 break;
             case FinalValue.INT_GOOGLE_MAPS:
-                mapView.setTileSource(initializeGoogleMaps());
+//                mapView.setTileSource(initializeGoogleMaps());
                 break;
         }
 
         stackOverlay.add(emptyOverlay);
         stackOverlay.add(markers);
-        //TODO Change to Google Map
+        // TODO Change to Google Map
 /*        if (mLocation != null)
             stackOverlay.add(mLocation);*/
 
@@ -201,45 +223,79 @@ public class FGMapManager implements OnClickListener {
     public static int getCurrentMapStyle() {
         return currentMapStyle;
     }
-
+    private void requirePermission(){
+        requestPermissionsIfNecessary(new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.INTERNET
+        });
+    }
     private OnlineTileSourceBase initializeSatellite() {
         if (sourceBase == null || (!sourceBase.name().equals("Google_Satellite"))) {
             sourceBase = new OnlineTileSourceBase("Google_Satellite", 1, 19, 256, ".jpg",
                     sat_url.toArray(new String[sat_url.size()])) {
                 @Override
-                public String getTileURLString(final MapTile aTile) {
-                    return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
+                public String getTileURLString(long l) {
+                    return null;
                 }
+//                @Override
+//                public String getTileURLString(final MapTile aTile) {
+//                    return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
+//                }
             };
         }
         return sourceBase;
     }
-
-    private OnlineTileSourceBase initializeGoogleMaps() {
-        if (sourceBase == null || (!sourceBase.name().equals("Google_Maps"))) {
-            sourceBase = new OnlineTileSourceBase("Google_Maps", 1, 20, 256, ".jpg",
-                    maps_url.toArray(new String[maps_url.size()])) {
-                @Override
-                public String getTileURLString(final MapTile aTile) {
-                    return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
-                }
-            };
+    private void requestPermissionsIfNecessary(String[] permissions) {
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(getMapView().getContext(), permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
+            }
         }
+        if (permissionsToRequest.size() > 0) {
+            ActivityCompat.requestPermissions(fgSystemManager.getFGActivity(),
+                    permissionsToRequest.toArray(new String[0]),
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+    private OnlineTileSourceBase initializeGoogleMaps() {
+       if (sourceBase == null || (!sourceBase.name().equals("Google_Maps"))) {
+           sourceBase = new OnlineTileSourceBase("Google_Maps", 1, 20, 256, ".jpg",
+                   maps_url.toArray(new String[maps_url.size()])) {
+               @Override
+               public String getTileURLString(long pMapTileIndex) {
+                   return null;
+               }
+//               @Override
+//               public String getTileURLString(final MapTile aTile) {
+//                   return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
+//               }
+           };
+       }
         return sourceBase;
     }
 
     private TilesOverlay initializeGoogleOverlay() {
         if (tileProvider == null) {
             tileProvider = new MapTileProviderBasic(this.fgSystemManager.getFGActivity());
-            final ITileSource tileSource = new OnlineTileSourceBase("Google_Hybrid", 1, 19, 256, ".png",
-                    hybrid_url.toArray(new String[hybrid_url.size()])) {
-                @Override
-                public String getTileURLString(final MapTile aTile) {
-
-                    return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
-                }
-            };
-            tileProvider.setTileSource(tileSource);
+           final ITileSource tileSource = new OnlineTileSourceBase("Google_Hybrid", 1, 19, 256, ".png",
+                   hybrid_url.toArray(new String[hybrid_url.size()])) {
+               @Override
+               public String getTileURLString(long pMapTileIndex) {
+                   return null;
+               }
+//               @Override
+//               public String getTileURLString(final MapTile aTile) {
+//
+//                   return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
+//               }
+           };
+           tileProvider.setTileSource(tileSource);
         }
         if (tilesOverlay == null) {
             tilesOverlay = new TilesOverlay(tileProvider, this.fgSystemManager.getFGActivity());
@@ -322,30 +378,34 @@ public class FGMapManager implements OnClickListener {
     private void initializeCurrentLocation() {
         Context context = fgSystemManager.getFGActivity().getApplicationContext();
 
-        //TODO Change to Google Map
-       /* mLocation = new MyLocationOverlay(context, mapView, new UserResourceProxyImpl(context));
-        mapView.getOverlays().add(mLocation);*/
-        // mLocation.enableMyLocation();
-        // mLocation.runOnFirstFix(new Runnable() {
-        // @Override
-        // public void run() {
-        // FGMapManager.this.fgSystemManager.getFGGPSManager().regenerateGeoPosition();
-        // mapController.setCenter(mLocation.getMyLocation());
-        // }
-        // });
 
-        // this.fgSystemManager.getFGGPSManager().getLastKnownLocation();
-        // GeoPoint geoPointCurrent;
-        // if (location != null) {
-        // geoPointCurrent = new GeoPoint(location.getLatitude(),
-        // location.getLongitude());
-        // } else {
-        // geoPointCurrent = FinalValue.GEOPOINT_VICTORY;
-        // }
-        // if (mLocation.getMyLocation() != null)
-        // this.mapController.setCenter(mLocation.getMyLocation());
-        // else
-        // this.mapController.setCenter(geoPointCurrent);
+//       mLocation = new MyLocationNewOverlay(new GpsMyLocationProvider(context), mapView);
+//        mapView.getOverlays().add(mLocation);
+//         mLocation.enableMyLocation();
+//         mLocation.enableFollowLocation();
+//         mapView.getController().setCenter(mLocation.getMyLocation());
+//         mLocation.runOnFirstFix(new Runnable() {
+//         @Override
+//         public void run() {
+////         FGMapManager.this.fgSystemManager.getFGGPSManager().regenerateGeoPosition();
+////             mapView.getController().setCenter(mLocation.getMyLocation());
+//         }
+//         });
+
+//         this.fgSystemManager.getFGGPSManager().getLastKnownLocation();
+//         GeoPoint geoPointCurrent;
+//         if (mLocation != null) {
+//            geoPointCurrent = new GeoPoint(mLocation.getMyLocation().getLatitude(),
+//                    mLocation.getMyLocation().getLongitude());
+//         } else {
+//            geoPointCurrent = FinalValue.GEOPOINT_VICTORY;
+//         }
+//         if (mLocation.getMyLocation() != null) {
+//             this.mapController.setCenter(mLocation.getMyLocation());
+//         }
+//         else {
+//             this.mapController.setCenter(geoPointCurrent);
+//         }
     }
 
     private void initialButtonZoomControl() {
@@ -369,7 +429,7 @@ public class FGMapManager implements OnClickListener {
         return markers;
     }
 
-    public MapController getMapController() {
+    public IMapController getMapController() {
         return this.mapController;
     }
 
@@ -431,7 +491,7 @@ public class FGMapManager implements OnClickListener {
         }
     }
 
-    public MyLocationOverlay getMyLocationOverlay() {
+    public MyLocationNewOverlay getMyLocationOverlay() {
         return mLocation;
     }
 

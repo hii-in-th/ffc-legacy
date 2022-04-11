@@ -142,8 +142,7 @@ public class CryptographerService extends IntentService {
             temp_encryptDb.createNewFile();
 
             mCrypto = new Cryptographer(Cryptographer.getKey(),
-                    Cryptographer.ALGORITHM_FFC);
-            boolean success = mCrypto.encrypt(plainDb, temp_encryptDb);
+                    Cryptographer.ALGORITHM_FFC);boolean success = mCrypto.encrypt(plainDb, temp_encryptDb);
             mCrypto.close();
             mCrypto = null;
             Log.d("EN", "encrypt=" + success);

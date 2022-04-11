@@ -26,6 +26,7 @@
 
 package th.in.ffc.security;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
@@ -35,6 +36,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -42,11 +44,16 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
 
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import th.in.ffc.FamilyFolderCollector;
 import th.in.ffc.R;
@@ -76,7 +83,7 @@ public class LoginActivity extends FFCFragmentActivity implements
 
     private IntentFilter mDecryptFilter = new IntentFilter(Action.DECRYPT);
     private IntentFilter mEncryptFilter = new IntentFilter(Action.ENCRYPT);
-
+    private int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -129,7 +136,28 @@ public class LoginActivity extends FFCFragmentActivity implements
                 mLoginFrag.setEnable(false);
             }
         }
-
+        requestPermissionsIfNecessary(new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.INTERNET
+        });
+    }
+    private void requestPermissionsIfNecessary(String[] permissions) {
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
+            }
+        }
+        if (permissionsToRequest.size() > 0) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissionsToRequest.toArray(new String[0]),
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
     }
 
     private boolean quiting = false;

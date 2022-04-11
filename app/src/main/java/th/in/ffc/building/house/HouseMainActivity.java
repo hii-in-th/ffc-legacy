@@ -215,7 +215,7 @@ public class HouseMainActivity extends FFCTabsPagerActivity {
             }
         });
 
-        File pick = new File(FamilyFolderCollector.PHOTO_DIR_HOUSE, name);
+        File pick = new File(FamilyFolderCollector.PHOTO_DIR_HOUSE, name.indexOf("tmp_")>0?name:"tmp_"+name);
         mPhotoPath = pick.getAbsolutePath();
         if (pick.exists()) {
             mImage.setImageDrawable(Drawable.createFromPath(mPhotoPath));
@@ -226,7 +226,7 @@ public class HouseMainActivity extends FFCTabsPagerActivity {
         }
 
         mPhotoTaker = new PhotoTaker(this,
-                FamilyFolderCollector.PHOTO_DIR_HOUSE, name);
+                FamilyFolderCollector.PHOTO_DIR_HOUSE, name.indexOf("tmp_")>0?name:"tmp_"+name);
 
     }
 
@@ -289,6 +289,7 @@ public class HouseMainActivity extends FFCTabsPagerActivity {
     @Override
     protected void onActivityResult(int arg0, int arg1, Intent arg2) {
         super.onActivityResult(arg0, arg1, arg2);
+        mPhotoTaker.setContext(getBaseContext());
         mPhotoTaker.onActivityResult(arg0, arg1, arg2);
     }
 

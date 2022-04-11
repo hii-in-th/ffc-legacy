@@ -61,6 +61,7 @@ import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 
 import java.io.File;
+import java.io.IOException;
 
 import me.piruin.quickaction.ActionItem;
 import me.piruin.quickaction.QuickAction;
@@ -308,8 +309,9 @@ public class VisitMainActivity extends FFCFragmentActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (mPhotoTaker != null)
+        if (mPhotoTaker != null) {
             mPhotoTaker.onActivityResult(requestCode, resultCode, data);
+        }
         switch (requestCode) {
             case REQUEST_VISIT_DEFAULT:
                 if (resultCode == RESULT_OK && data != null) {

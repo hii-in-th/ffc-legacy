@@ -1,5 +1,6 @@
 package th.in.ffc.map.ui.markerActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -27,6 +29,8 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import com.ibus.phototaker.ImageResizer;
 import com.ibus.phototaker.PhotoTaker;
+
+import org.osmdroid.api.IMapController;
 import org.osmdroid.views.MapController;
 import th.in.ffc.R;
 import th.in.ffc.app.FFCFragment;
@@ -531,7 +535,7 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
 
             this.fgSystemManager.markMarkerOnMap(spot);
 
-            MapController mapController = this.fgSystemManager
+            IMapController mapController = this.fgSystemManager
                     .getFGMapManager().getMapController();
 
             mapController.setCenter(spot.getPoint());
@@ -713,6 +717,7 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
                                 CreateBaseFragment.this.editTextLongitude
                                         .setText((float) location
                                                 .getLongitude() + "");
+
                             }
                         });
 
@@ -725,14 +730,36 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
                                         .setChecked(false);
                             }
                         });
+//2. now setup to change color of the button
 
-                b.create().show();
+                AlertDialog myDialog = b.create();
+                myDialog.show();
+                Button positiveButton = myDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button negativeButton = myDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+//                Button neutralButton = myDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                positiveButton.setTextColor(Color.parseColor("#FFFFFFFF"));
+                positiveButton.setBackgroundColor(Color.parseColor("#FFB8B8B8"));
+
+                negativeButton.setTextColor(Color.parseColor("#FFFFFFFF"));
+                negativeButton.setBackgroundColor(Color.parseColor("#FFB8B8B8"));
+
+//                neutralButton.setTextColor(Color.parseColor("#FF1B5AAC"));
+//                neutralButton.setBackgroundColor(Color.parseColor("#FFD9E9FF"));
 
             } else {
 
-                AlertDialog dialog = this.fgSystemManager.getFGDialogManager()
+                final AlertDialog dialog = this.fgSystemManager.getFGDialogManager()
                         .getAlertDialogLocationNotFound(this.getActivity());
-                dialog.show();
+
+
+                dialog.setOnShowListener( new DialogInterface.OnShowListener() {
+                    @SuppressLint("ResourceType")
+                    @Override
+                    public void onShow(DialogInterface arg0) {
+//                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(COLOR_I_WANT);
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setText(R.color.black);
+                    }
+                });
 
                 this.checkBoxAutoGPS.setChecked(false);
             }

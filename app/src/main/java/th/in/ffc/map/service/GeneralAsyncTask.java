@@ -88,8 +88,8 @@ public class GeneralAsyncTask extends AsyncTask<Runnable, String, String> {
 //				ft.remove(f);
 //				ft.commit();
 //			}
-//		}else{
-        mProgressDialog.dismiss();
+//		}else{s
+//        mProgressDialog.dismiss();
 //		}
     }
 

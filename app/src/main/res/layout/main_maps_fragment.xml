@@ -5,12 +5,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
+<!--    <org.osmdroid.views.MapView-->
+<!--            android:id="@+id/mapview"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:clickable="true"-->
+<!--            android:state_enabled="true"/>-->
+
     <org.osmdroid.views.MapView
-            android:id="@+id/mapview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:state_enabled="true"/>
+        android:id="@+id/mapview"
+        tilesource="Mapnik"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <!-- key for WIS Key android:apiKey="00c4k4GjFT9Rj9TaE6y42HRpncSKu3-DounjOfw"
         /> -->
     <!-- key for Debug mode android:apiKey="0Ecev20VUIK1mVp5azWdHQstzJX1oZtF71LDZFA"
@@ -31,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:padding="5dip">
+            android:padding="5dip" >
 
         <ImageButton
                 android:id="@+id/imagebutton_zoomout"

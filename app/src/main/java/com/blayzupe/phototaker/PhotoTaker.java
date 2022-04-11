@@ -4,12 +4,14 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,11 +21,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
+import android.content.Context;
+import android.widget.Toast;
 
 public class PhotoTaker {
 
@@ -52,6 +59,16 @@ public class PhotoTaker {
     private OnNotFoundCropIntentListener mNotFoundCropIntentListener;
     private Uri mCropUri;
 
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    private android.content.Context context;
+
 
     public PhotoTaker(Activity activity) {
         this(activity, "/sdcard/", "PhotoTaker.jpg");
@@ -63,6 +80,11 @@ public class PhotoTaker {
         setOutput(path, name);
 
     }
+//    public PhotoTaker(Activity activity, String path, String name,Context context) {
+//        mActivity = activity;
+//        setOutput(path, name);
+//        this.context = context;
+//    }
 
     public PhotoTaker(Activity activity, String path, String name,
                       OnCropFinishListener listener) {
@@ -78,12 +100,12 @@ public class PhotoTaker {
     public void setOutput(String path, String name) {
         mDirectory = createDirectory(path);
         mOutput = name;
-        mTemp = TEMP_PREFIX.concat(name);
+        mTemp = name.indexOf("tmp_")>-1?name: TEMP_PREFIX.concat(name);
     }
 
     public void setOutput(String name) {
         mOutput = name;
-        mTemp = TEMP_PREFIX.concat(name);
+        mTemp = name.indexOf("tmp_")>-1?name: TEMP_PREFIX.concat(name);
     }
 
     public void setOutputSize(int x, int y) {
@@ -136,22 +158,35 @@ public class PhotoTaker {
                 case PICK_FROM_FILE:
                     Log.e(TAG, "blayzupe PICK_IMAGE");
                     Uri dataUri = data.getData();
-
-                    if (dataUri != null) {
-                        if (dataUri.getScheme().trim().equalsIgnoreCase("content"))
-                            doCropImage(data.getData());
-
-                            // if Scheme URI is File then scan for content then Crop it!
-                        else if (dataUri.getScheme().trim()
-                                .equalsIgnoreCase("file")) {
-                            Log.d(TAG, "blayzupe search for Media Content of path="
-                                    + dataUri.getPath());
-                            MediaUriFinder.create(mActivity, dataUri.getPath(),
-                                    mScanner);
-                        }
-                    } else {
-                        Log.e(TAG, "blayzupe DATA IS NULL");
+                    try {
+                        InputStream iStream = context.getContentResolver().openInputStream(dataUri);
+                        byte[] inputData = getBytes(iStream);
+                        final File tempFile2 = getFile(mDirectory, mTemp);
+                        OutputStream out = new FileOutputStream(tempFile2);
+                        out.write(inputData);
+                        out.close();
                     }
+                    catch (Exception e){
+                        Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+
+//                    val takedImage = BitmapFactory.decodeFile(photoFile.absolutePath);
+//                    imageView.setImageBitmap(takedImage)
+//                    if (dataUri != null) {
+//                        if (dataUri.getScheme().trim().equalsIgnoreCase("content"))
+//                            doCropImage(data.getData());
+//
+//                            // if Scheme URI is File then scan for content then Crop it!
+//                        else if (dataUri.getScheme().trim()
+//                                .equalsIgnoreCase("file")) {
+//                            Log.d(TAG, "blayzupe search for Media Content of path="
+//                                    + dataUri.getPath());
+//                            MediaUriFinder.create(mActivity, dataUri.getPath(),
+//                                    mScanner);
+//                        }
+//                    } else {
+//                        Log.e(TAG, "blayzupe DATA IS NULL");
+//                    }
                     break;
                 case CROP_IMAGE: {
 
@@ -182,6 +217,20 @@ public class PhotoTaker {
         }
     }
 
+    private byte[] getBytes(InputStream inputStream) {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        try {
+            int nRead;
+            byte[] data = new byte[16384];
+            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+        }
+        catch (Exception ex) {
+
+        }
+        return buffer.toByteArray();
+    }
     public boolean doCropImage(Uri uri) {
         try {
             // If filter out file Scheme URI.
@@ -257,14 +306,8 @@ public class PhotoTaker {
         if(ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(mActivity,new String[] {Manifest.permission.CAMERA},IMAGE_CAPTURE );
         }else {
-            openCamera();
-//            doImageCapture();
+            doImageCapture();
         }
-    }
-
-    private void openCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        mActivity.startActivityForResult(intent,IMAGE_CAPTURE);
     }
     public boolean doPickImage() {
         try {
@@ -272,29 +315,31 @@ public class PhotoTaker {
 
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
             intent.setType("image/*");
+            intent.putExtra("return-data", return_data);
 
+            mActivity.startActivityForResult(intent, PICK_FROM_FILE);
             // Use external Crop Intent if found
-            if (findCropActivity()) {
-                Log.d(TAG, "blayzupe doPickImage() Found");
-                intent.putExtra("return-data", return_data);
-
-                mActivity.startActivityForResult(intent, PICK_FROM_FILE);
-
-                // Use Internal Crop method of GET_CONTENT intent
-                // This is more Risk method
-            } else {
-                Log.d(TAG, "blayzupe doPickImage() Not found crop activity");
-                intent.putExtra("crop", "true");
-                intent.putExtra("noFaceDetection", !faceDetection);
-                intent.putExtra("aspectX", aspectX);
-                intent.putExtra("aspectY", aspectY);
-                intent.putExtra("outputX", outputX);
-                intent.putExtra("outputY", outputY);
-                intent.putExtra("scale", scale);
-                intent.putExtra("return-data", return_data);
-
-                mActivity.startActivityForResult(intent, CROP_IMAGE);
-            }
+//            if (findCropActivity()) {
+//                Log.d(TAG, "blayzupe doPickImage() Found");
+//                intent.putExtra("return-data", return_data);
+//
+//                mActivity.startActivityForResult(intent, PICK_FROM_FILE);
+//
+//                // Use Internal Crop method of GET_CONTENT intent
+//                // This is more Risk method
+//            } else {
+//                Log.d(TAG, "blayzupe doPickImage() Not found crop activity");
+//                intent.putExtra("crop", "true");
+//                intent.putExtra("noFaceDetection", !faceDetection);
+//                intent.putExtra("aspectX", aspectX);
+//                intent.putExtra("aspectY", aspectY);
+//                intent.putExtra("outputX", outputX);
+//                intent.putExtra("outputY", outputY);
+//                intent.putExtra("scale", scale);
+//                intent.putExtra("return-data", return_data);
+//
+//                mActivity.startActivityForResult(intent, CROP_IMAGE);
+//            }
             return true;
         } catch (ActivityNotFoundException anfe) {
             anfe.printStackTrace();

@@ -42,6 +42,7 @@ import th.in.ffc.intent.Category;
 import th.in.ffc.person.PersonActivity;
 import th.in.ffc.provider.PersonProvider.PersonHouse;
 import th.in.ffc.util.CheckNetwork;
+import th.in.ffc.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -328,6 +329,7 @@ public class MapBallCorlorFragmentActivity extends FFCFragmentActivity implement
                         + listVillNo.get(i)
                         + " "
                         + villName.get(i);
+                Log.d("==> Map:",position.get(i).toString());
                 Marker maker = myMap.addMarker(new MarkerOptions().position(position.get(i)));
                 maker.setIcon(BitmapDescriptorFactory.fromResource(resourceBall[groupRisk]));
                 markerTag.put(hcode.get(i), maker);

@@ -1,11 +1,13 @@
 package th.in.ffc.map;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,8 +15,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,10 +30,21 @@ import android.widget.Toast;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 
-import org.osmdroid.google.wrapper.MyLocationOverlay;
+//import org.osmdroid.google.wrapper.MyLocationOverlay;
+
+//import org.osmdroid.google.wrapper.MyLocationOverlay;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import th.in.ffc.FamilyFolderCollector;
@@ -66,9 +83,10 @@ public class FGActivity extends FFCFragmentActivity {
     private MenuItem gps_item;
 
     private Handler handler;
-
+    private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     public static boolean filter_enabled = false;
-
+    private boolean firsttime = true;
+    MapView mapView;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -90,6 +108,9 @@ public class FGActivity extends FFCFragmentActivity {
 
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
+        mapView = (MapView) findViewById(R.id.mapview);
+        initialMap();
+        getCurrentLocation();
 
         handler = new Handler() {
             public void handleMessage(android.os.Message msg) {
@@ -121,14 +142,15 @@ public class FGActivity extends FFCFragmentActivity {
 //                                .enableMyLocation();
                         }
 
-                        fgsys.getFGMapManager().checkGPS();
+//                        fgsys.getFGMapManager().checkGPS();
                         break;
                     case LOCATION_INITIALIZE:
                         GeoPoint point = fgsys.getFGGPSManager()
                             .getGeoPointCurrent();
                         if (point == null)
                             point = FinalValue.GEOPOINT_VICTORY;
-                        fgsys.getFGMapManager().getMapController().setCenter(point);
+//                        fgsys.getFGMapManager().getMapController().setCenter(point);
+
                         break;
                     case UPDATE_WIFI_ICON:
                         wifi_item.setIcon(msg.arg1);
@@ -143,7 +165,51 @@ public class FGActivity extends FFCFragmentActivity {
         };
 
     }
+    private void initialMap(){
+        Context ctx = this.getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
+        MapView mapView = (MapView) findViewById(R.id.mapview);
+
+        mapView.getController().setZoom(18.0);
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        requestPermissionsIfNecessary(new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.INTERNET
+        });
+        mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+        mapView.setMultiTouchControls(true);
+
+        CompassOverlay compassOverlay = new CompassOverlay(getApplicationContext(),  mapView);
+        compassOverlay.enableCompass();
+        mapView.getOverlays().add(compassOverlay);
+    }
+    private void getCurrentLocation(){
+
+            MyLocationNewOverlay mLocation = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()), mapView);
+            mLocation.enableMyLocation();
+            mLocation.enableFollowLocation();
+            mapView.getOverlays().add(mLocation);
+
+    }
+    private void requestPermissionsIfNecessary(String[] permissions) {
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
+            }
+        }
+        if (permissionsToRequest.size() > 0) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissionsToRequest.toArray(new String[0]),
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
     public static String getPictureDir() {
         return PICTURE_PATH;
     }
@@ -192,7 +258,6 @@ public class FGActivity extends FFCFragmentActivity {
             Log.i("TAG!", "Normally functional");
             fgsys.getFGMapManager().checkGPS();
         }
-
 
     }
 
@@ -329,20 +394,23 @@ public class FGActivity extends FFCFragmentActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_center:
-                Location location = fgsys.getFGGPSManager().getLastKnownLocation();
-                GeoPoint geoPointCurrent;
-                MyLocationOverlay mLocation = fgsys.getFGMapManager()
-                    .getMyLocationOverlay();
+//                Location location = fgsys.getFGGPSManager().getLastKnownLocation();
+//                GeoPoint geoPointCurrent;
+//                MyLocationNewOverlay mLocation = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()), mapView);
+//                mLocation.enableMyLocation();
+//                mLocation.enableFollowLocation();
+                getCurrentLocation();
+                Log.d("Tag(menu)","menu_center");
                 //TODO Change to Google Map
-/*                if (mLocation.getLastFix() != null){
-                    fgsys.getFGMapManager().getMapController()
-                            .setCenter(mLocation.getMyLocation());
-                } else if (location != null) {
-                    geoPointCurrent = new GeoPoint(location.getLatitude(),
-                            location.getLongitude());
-                    fgsys.getFGMapManager().getMapController()
-                            .setCenter(geoPointCurrent);
-                }*/
+//                if (mLocation.getLastFix() != null){
+//                    fgsys.getFGMapManager().getMapController()
+//                            .setCenter(mLocation.getMyLocation());
+//                } else if (location != null) {
+//                    geoPointCurrent = new GeoPoint(location.getLatitude(),
+//                            location.getLongitude());
+//                    fgsys.getFGMapManager().getMapController()
+//                            .setCenter(geoPointCurrent);
+//                }
 
                 // For testing-purpose only
 
