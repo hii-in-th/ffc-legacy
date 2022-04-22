@@ -390,7 +390,9 @@ public class FGActivity extends FFCFragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("TAG!", item.getTitle().toString());
+        if(item.getTitle()!=null){
+            Log.d("TAG!", item.getTitle().toString());
+        }
 
         switch (item.getItemId()) {
             case R.id.menu_center:

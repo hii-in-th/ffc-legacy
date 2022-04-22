@@ -350,7 +350,7 @@ public class PhotoTaker {
     public void doShowDialog() {
         final CharSequence[] items = {"Take from Camera",
                 "Select from Gallery"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity,android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setItems(items, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 switch (item) {

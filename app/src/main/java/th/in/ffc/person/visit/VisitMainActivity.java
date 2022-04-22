@@ -494,7 +494,7 @@ public class VisitMainActivity extends FFCFragmentActivity implements
         if (TextUtils.isEmpty(mVisitNo)) {
             super.onBackPressed();
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog_Alert);
             builder.setTitle(getString(R.string.discard));
             builder.setPositiveButton(R.string.yes,
                 new DialogInterface.OnClickListener() {

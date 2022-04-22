@@ -197,14 +197,18 @@ public class VisitNCDActivity extends FFCEditActivity implements
             Log.d("pressure1:2", bp + ":" + bp2);
             if (!TextUtils.isEmpty(bp)) {
                 String[] bp_arr = bp.split("/");
-                bph1.setText(bp_arr[0]);
-                bpl1.setText(bp_arr[1]);
+                if(bp_arr.length>1) {
+                    bph1.setText(bp_arr[0]);
+                    bpl1.setText(bp_arr[1]);
+                }
             }
 
             if (!TextUtils.isEmpty(bp2)) {
                 String[] bp_arr2 = bp2.split("/");
-                bph2.setText(bp_arr2[0]);
-                bpl2.setText(bp_arr2[1]);
+                if(bp_arr2.length>1) {
+                    bph2.setText(bp_arr2[0]);
+                    bpl2.setText(bp_arr2[1]);
+                }
             }
         } else { // Edit
 
@@ -517,7 +521,7 @@ public class VisitNCDActivity extends FFCEditActivity implements
     }
 
     private void alert(String title, String msg) {
-        AlertDialog.Builder d = new AlertDialog.Builder(this);
+        AlertDialog.Builder d = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog_Alert);
         d.setTitle(title);
         d.setMessage(msg);
         d.setCancelable(true);

@@ -397,7 +397,7 @@ public class VisitAncActivity extends VisitActivity implements
             } else {
                 ancno = 4;
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog_Alert);
                 builder.setCancelable(false);
                 builder.setTitle(R.string.ask_to_continue);
                 builder.setMessage(R.string.hint_over_anc_age);
@@ -424,7 +424,7 @@ public class VisitAncActivity extends VisitActivity implements
 
         } else {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog_Alert);
             builder.setMessage(R.string.ask_to_pregnanc);
             builder.setPositiveButton(R.string.yes,
                     new DialogInterface.OnClickListener() {

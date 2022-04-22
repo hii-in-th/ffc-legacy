@@ -514,7 +514,7 @@ public class Map506DetailFragmentActivity extends FFCFragmentActivity implements
     }
 
     private void settingGPS() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Map506DetailFragmentActivity.this);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Map506DetailFragmentActivity.this,android.R.style.Theme_Material_Light_Dialog_Alert);
         alertDialog.setTitle("ตั้งค่า GPS");
         alertDialog.setMessage("คุณไม่ได้เปิดใช้ GPS ต้องการเปิดใช้หรือไม่ ?");
         alertDialog.setPositiveButton("ตั้งค่า", new DialogInterface.OnClickListener() {

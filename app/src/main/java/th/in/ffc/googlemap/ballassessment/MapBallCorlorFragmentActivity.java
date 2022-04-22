@@ -502,7 +502,7 @@ public class MapBallCorlorFragmentActivity extends FFCFragmentActivity implement
                 try {
                     final List<android.location.Address> addresses = geoCoder.getFromLocationName(searchStr, 10);
                     if (addresses.size() > 0) {
-                        AlertDialog.Builder foundDialog = new AlertDialog.Builder(MapBallCorlorFragmentActivity.this);
+                        AlertDialog.Builder foundDialog = new AlertDialog.Builder(MapBallCorlorFragmentActivity.this,android.R.style.Theme_Material_Light_Dialog_Alert);
                         foundDialog.setIcon(R.drawable.ic_launcher);
                         foundDialog.setTitle(String.format(getString(R.string.search_place_result_of), searchStr));
                         final ArrayAdapter<String> arrayAdapter =

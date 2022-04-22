@@ -1270,7 +1270,10 @@ public class PersonProvider extends ContentProvider {
 
         // System.out.println(builder.buildQuery(projection, selection, groupby,
         // having, sortOrder, null));
-
+        System.out.println(">> query table <<");
+        System.out.println(builder.getTables());
+        System.out.println(">> database <<");
+        System.out.println(db.toString());
         Cursor c = builder.query(db, projection, selection, selectionArgs,
                 groupby, having, sortOrder);
         c.setNotificationUri(getContext().getContentResolver(), uri);

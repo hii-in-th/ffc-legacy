@@ -63,7 +63,7 @@ public class JViewFragment extends FFCFragment {
     // else Dialogue will be dismiss and nothing happen
     // MUST OVERRIDE METHOD Delete() FOR EACH FORM
     public void onDeletePressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setMessage(getResources().getString(R.string.dialog_delete))
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.ok),
@@ -95,7 +95,7 @@ public class JViewFragment extends FFCFragment {
     // else Dialogue will be dismiss and nothing happen
     // MUST OVERRIDE METHOD Delete() FOR EACH FORM
     public void onEditPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setMessage(getResources().getString(R.string.dialog_neededit))
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.ok),

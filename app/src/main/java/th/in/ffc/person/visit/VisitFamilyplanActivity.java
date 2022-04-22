@@ -287,7 +287,7 @@ public class VisitFamilyplanActivity extends FFCEditActivity {
 
             }
             this.globalC = cv;
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog_Alert);
             builder.setMessage(getResources().getString(R.string.dialog_goPreg))
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.ok),

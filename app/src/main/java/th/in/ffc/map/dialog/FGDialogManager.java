@@ -65,7 +65,7 @@ public class FGDialogManager {
 
     public AlertDialog getAlertDialogLocationNotFound(Activity act) {
         Resources res = act.getResources();
-        AlertDialog.Builder b = new AlertDialog.Builder(act);
+        AlertDialog.Builder b = new AlertDialog.Builder(act,android.R.style.Theme_Material_Light_Dialog_Alert);
         b.setTitle(res.getString(R.string.STRING_LOCATION_NOT_FOUND_TITLE));
         b.setIcon(android.R.drawable.ic_dialog_alert);
         b.setCancelable(false);

@@ -324,6 +324,11 @@
     <string name="visithomehealthindividual">เยี่ยมบ้าน</string>
     <string name="visithomehealthindividual.homehealthtype">ประเภทการเยี่ยมบ้าน</string>
     <string name="visithomehealthindividual.patientsign">สภาพ/อาการของเป้าหมาย</string>
+    <string name="visithomehealthindividual.symptoms">อาการสำคัญ</string>
+    <string name="visithomehealthindividual.symptomsco">อาการร่วมอื่นๆ</string>
+    <string name="visithomehealthindividual.vitalcheck">ผลการตรวจ</string>
+    <string name="visithomehealthindividual.diagnote">คำวินิจฉัยโรค</string>
+    <string name="visithomehealthindividual.healthsuggest1">การให้สุขศึกษา</string>
     <string name="visithomehealthindividual.homehealthdetail">การให้บริการดูแลรักษา</string>
     <string name="visithomehealthindividual.homehealthresult">การประเมินผล</string>
     <string name="visithomehealthindividual.homehealthplan">แผนการดูแลฯ ในอนาคต</string>

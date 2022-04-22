@@ -177,7 +177,7 @@ public class MainActivity extends FFCGridActivity {
     @Override
     public void onBackPressed() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setTitle("exit?");
         builder.setPositiveButton(R.string.yes,
                 new DialogInterface.OnClickListener() {

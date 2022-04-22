@@ -3,6 +3,7 @@ package th.in.ffc.widget;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Rect;
+import android.text.Editable;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -10,7 +11,7 @@ import android.widget.Filterable;
 import android.widget.ListAdapter;
 import th.in.ffc.R;
 
-public class InstantAutoComplete extends AutoCompleteTextView {
+public class InstantAutoComplete extends androidx.appcompat.widget.AppCompatAutoCompleteTextView {
 
     public InstantAutoComplete(Context arg0, AttributeSet arg1) {
         super(arg0, arg1);
@@ -25,9 +26,16 @@ public class InstantAutoComplete extends AutoCompleteTextView {
 
 
     @Override
-    public <T extends ListAdapter & Filterable> void setAdapter(T adapter) {
+    public <T extends ListAdapter & Filterable> void setAdapter(final T adapter) {
         super.setAdapter(adapter);
-        this.setEnabled(adapter != null);
+//        this.setEnabled(adapter != null);
+        boolean post = this.post(new Runnable() {
+            @Override
+            public void run() {
+                setEnabled(adapter != null);
+            }
+
+        });
     }
 
     @Override
@@ -35,7 +43,6 @@ public class InstantAutoComplete extends AutoCompleteTextView {
                                   Rect previouslyFocusedRect) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
         if (focused && this.isEnabled()) {
-
             performFiltering(getText(), 0);
             showDropDown();
         }

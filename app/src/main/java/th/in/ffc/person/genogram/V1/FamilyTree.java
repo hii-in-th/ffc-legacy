@@ -384,7 +384,7 @@ public class FamilyTree extends FFCFragmentActivity {
                     name.add(u.getFullName(FamilyTree.this));
                     unknown[i++] = u;
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog_Alert);
                 builder.setItems(name.toArray(new String[name.size()]),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int item) {

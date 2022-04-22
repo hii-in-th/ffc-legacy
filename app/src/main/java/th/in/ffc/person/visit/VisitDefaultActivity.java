@@ -368,7 +368,7 @@ public class VisitDefaultActivity extends VisitActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
-
+        
         switch (loader.getId()) {
             case LOAD_MAXVISIT:
                 this.setSupportProgressBarIndeterminateVisibility(false);

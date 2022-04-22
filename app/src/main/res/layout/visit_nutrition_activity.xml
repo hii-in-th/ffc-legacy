@@ -137,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/visitnutrition.nlevel"/>
 
-        <TextView
+        <EditText
                 android:id="@+id/answer8"
                 style="@style/FFC.TextView.Content"
                 android:layout_width="fill_parent"
@@ -151,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/visitnutrition.nlevel1"/>
 
-        <TextView
+        <EditText
                 android:id="@+id/answer9"
                 style="@style/FFC.TextView.Content"
                 android:layout_width="fill_parent"
@@ -165,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/visitnutrition.nlevel2"/>
 
-        <TextView
+        <Spinner
                 android:id="@+id/answer10"
                 style="@style/FFC.TextView.Content"
                 android:layout_width="fill_parent"

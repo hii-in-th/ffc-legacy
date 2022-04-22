@@ -28,9 +28,12 @@ public class PatientDialogFragment extends DialogFragment {
 
     }
 
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Light_Dialog_Alert);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         builder.setIcon(R.drawable.ic_launcher);
         builder.setTitle(R.string.click_to_show_patients);
         builder.setView(getContentView());

@@ -49,7 +49,7 @@ public class AskRadiusDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setIcon(R.drawable.ic_launcher);
         builder.setTitle("Setting Radius");
         builder.setView(getContentView());

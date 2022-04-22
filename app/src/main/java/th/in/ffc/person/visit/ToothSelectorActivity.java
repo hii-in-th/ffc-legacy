@@ -55,7 +55,7 @@ public class ToothSelectorActivity extends VisitActivity {
     private void setToothType(String tt) {
         //For no tooth type code
         if (TextUtils.isEmpty(tt)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog_Alert);
             builder.setMessage(getResources().getString(R.string.dialog_noToothType))
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.primaryTooth),
