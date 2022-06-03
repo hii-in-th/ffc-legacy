@@ -4,7 +4,7 @@
     <string name="hello">สวัสดี ชาวโลก</string>
     <string name="app_name">Family Folder Collector</string>
     <string name="app_lable">FFC+</string>
-    <string name="app_version">Plus 2.1</string>
+    <string name="app_version">Plus 2.2</string>
     <!-- Login Fragment String -->
     <string name="login">เข้าสู่ระบบ</string>
     <string name="sure_to_exit">ต้องการออกจากระบบ?</string>
@@ -146,10 +146,12 @@
     <string name="measurement">การวัด</string>
     <string name="diagnose">การวินิจฉัย</string>
     <string name="symtom">อาการเบื้องต้น</string>
+    <string name="symtomsco">อาการร่วมอื่นๆ</string>
     <string name="vitalcheck">ผลการตรวจ</string>
     <string name="heatlhsuggest">คำแนะนำสุขภาพ</string>
     <string name="continue_">ต่อเนื่อง</string>
     <string name="diagnosis">วินิจฉัย</string>
+    <string name="diagnote">คำวินิจฉัย</string>
     <string name="drug">ยา</string>
     <string name="dose">วิธีการใช้ยา</string>
     <string name="clinic">คลีนิค</string>
@@ -799,8 +801,8 @@
     <string name="village_post">รหัสไปรษณีย์</string>
     <string name="village_cub">หลัก</string>
     <string name="location">สถานที่</string>
-    <string name="latitude">ละติจูด</string>
-    <string name="longitude">ลองติจูด</string>
+    <string name="latitude">ละติจูด (ygis)</string>
+    <string name="longitude">ลองติจูด (xgis)</string>
     <string name="try_again">หมายเลขลำดับที่ซ้ำ โปรดใส่อีกครั้ง</string>
     <string name="delete_marker">ลบตำแหน่ง</string>
     <string name="todo">TODO</string>
@@ -931,5 +933,11 @@
     <string name="address_506_string_format">%1$s,%2$s,%3$s หมู่%4$s %5$s,%6$s %7$s,%8$s,%9$s</string>
     <string name="click_to_show_patients">คลิกเพื่อดูรายชื่อผู้ป่วย</string>
     <string name="please_define_house_position">กรุณาใส่ค่าตำแหน่งของบ้าน</string>
-
+    <string name="device_efdv470">เครื่องมือวัด (Berry Med)</string>
+    <string name="device_pressure">วัดความดัน</string>
+    <string name="device_temperator">วัดอุณหภูมิ</string>
+    <string name="dead">เสียชีวิต</string>
+    <string name="bluetooth_title">Bluetooth</string>
+    <string name="search_devices">Search Devices</string>
+    <string name="device_berry">เครื่องมือวัด (Berry Med)</string>
 </resources>

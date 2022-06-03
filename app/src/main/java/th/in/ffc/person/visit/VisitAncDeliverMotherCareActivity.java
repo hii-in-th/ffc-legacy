@@ -123,13 +123,17 @@ public class VisitAncDeliverMotherCareActivity extends FFCEditActivity {
 
         hosservice = (SearchableButton) findViewById(R.id.answer2);
         datedeliver = (ThaiDatePicker) findViewById(R.id.answer3);
+//        Spinner day = (Spinner) datedeliver.getChildAt(0);
+//        Spinner month = (Spinner) datedeliver.getChildAt(1);
+//        Spinner year = (Spinner) datedeliver.getChildAt(2);
+
         Spinner day = (Spinner) datedeliver.getChildAt(0);
         Spinner month = (Spinner) datedeliver.getChildAt(1);
-        Spinner year = (Spinner) datedeliver.getChildAt(2);
+//        Spinner year = (Spinner) datedeliver.getChildAt(2);
 
         day.setOnItemSelectedListener(AbortionListener);
         month.setOnItemSelectedListener(AbortionListener);
-        year.setOnItemSelectedListener(AbortionListener);
+//        year.setOnItemSelectedListener(AbortionListener);
 
         delivertime = (ThaiTimePicker) findViewById(R.id.answer4);
         deliverresult = (ArrayFormatSpinner) findViewById(R.id.answer5);

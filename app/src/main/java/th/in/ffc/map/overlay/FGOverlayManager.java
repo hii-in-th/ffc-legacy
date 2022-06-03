@@ -3,6 +3,7 @@ package th.in.ffc.map.overlay;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -75,8 +76,13 @@ public class FGOverlayManager {
             }
 
             spot.setMarker(this.getMarkerWithText(chosen, fgSystemManager.getFGActivity(), spot.getBundle().getString("HNo"), Color.BLACK, resources));
-
             markers.addItem(0, spot);
+
+//            Drawable icon = this.getMarker(chosen, resources);
+//            icon.setBounds(0,0,icon.getIntrinsicWidth(),icon.getIntrinsicHeight());
+//            spot.setMarker(icon);
+
+            markers.addItem(spot);
         } else if (type == MARKER_TYPE.POI) {
             int intType = spot.getBundle().getInt("Type");
             int drawableID = -1;
@@ -218,9 +224,14 @@ public class FGOverlayManager {
         Drawable marker = res.getDrawable(markerID);
 
         BitmapDrawable bitmapDrawable = (BitmapDrawable) marker;
+//        Bitmap bitmap = Bitmap.createBitmap(bitmapDrawable.getBitmap().copy(
+//                Bitmap.Config.ARGB_8888, true));
+
         Bitmap bitmap = Bitmap.createBitmap(bitmapDrawable.getBitmap().copy(
                 Bitmap.Config.ARGB_8888, true));
-        Canvas canvas = new Canvas(bitmap);
+        int mul= 2;
+        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()*mul, bitmap.getHeight()*mul, false);
+        Canvas canvas = new Canvas(bitmap2);
 
         float default_width = 25f;
 
@@ -252,9 +263,9 @@ public class FGOverlayManager {
             canvas.drawText(text, center_x, center_y, paint);
         }
 
-        bitmapDrawable = new BitmapDrawable(bitmap);
-//		bitmapDrawable.setBounds(0, 0, bitmapDrawable.getIntrinsicWidth(),
-//				bitmapDrawable.getIntrinsicHeight());
+        bitmapDrawable = new BitmapDrawable(bitmap2);
+//		bitmapDrawable.setBounds(0, 0, bitmapDrawable.getIntrinsicWidth()*50,
+//				bitmapDrawable.getIntrinsicHeight()*50);
 
         return bitmapDrawable;
     }
@@ -267,7 +278,10 @@ public class FGOverlayManager {
         Bitmap bitmap = Bitmap.createBitmap(bitmapDrawable.getBitmap().copy(
                 Bitmap.Config.ARGB_8888, false));
 
-        bitmapDrawable = new BitmapDrawable(bitmap);
+        int mul= 2;
+        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()*mul, bitmap.getHeight()*mul, false);
+        bitmapDrawable = new BitmapDrawable(bitmap2);
+        bitmapDrawable.setBounds(0,0, bitmapDrawable.getIntrinsicWidth(), bitmapDrawable.getIntrinsicHeight());
 //		bitmapDrawable.setBounds(0, 0, bitmapDrawable.getIntrinsicWidth(),
 //				bitmapDrawable.getIntrinsicHeight());
 

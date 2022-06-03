@@ -19,4 +19,8 @@ public class MapFragment extends Fragment {
         View v = inflater.inflate(R.layout.main_maps_fragment, container, false);
         return v;
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }

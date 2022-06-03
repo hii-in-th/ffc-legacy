@@ -1,6 +1,7 @@
 package th.in.ffc.map;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -33,6 +34,8 @@ import com.crashlytics.android.answers.ContentViewEvent;
 //import org.osmdroid.google.wrapper.MyLocationOverlay;
 
 //import org.osmdroid.google.wrapper.MyLocationOverlay;
+import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.views.CustomZoomButtonsController;
@@ -90,27 +93,27 @@ public class FGActivity extends FFCFragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
         super.onCreate(savedInstanceState);
-
         setSupportProgressBarIndeterminateVisibility(false);
-
         Answers.getInstance().logContentView(new ContentViewEvent()
-            .putContentId(getPcuCode())
-            .putContentType("Map"));
+                .putContentId(getPcuCode())
+                .putContentType("Map"));
 
         DATA_PATH = Environment.getExternalStorageDirectory().getAbsolutePath()
-            + "/Android/data/" + this.getPackageName() + "/";
+                + "/Android/data/" + this.getPackageName() + "/";
         PICTURE_PATH = DATA_PATH + "pictures/";
         TEMP_PATH = DATA_PATH + "temps/";
-
+//        this.setContentView(R.layout.main_maps_activity);
         this.setContentView(R.layout.main_maps_activity);
-
+        loadMap();
+        getCurrentLocation();
+    }
+    private void loadMap(){
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         mapView = (MapView) findViewById(R.id.mapview);
         initialMap();
-        getCurrentLocation();
+
 
         handler = new Handler() {
             public void handleMessage(android.os.Message msg) {
@@ -123,7 +126,7 @@ public class FGActivity extends FFCFragmentActivity {
                             Log.d("TAG!", "conRec is null!");
                             conRec = new ConnectivityReceiver();
                             registerReceiver(conRec, new IntentFilter(
-                                "android.net.conn.CONNECTIVITY_CHANGE"));
+                                    "android.net.conn.CONNECTIVITY_CHANGE"));
 
                             //TODO Change to Google Map
 //                            final MyLocationOverlay lo = fgsys.getFGMapManager()
@@ -146,7 +149,7 @@ public class FGActivity extends FFCFragmentActivity {
                         break;
                     case LOCATION_INITIALIZE:
                         GeoPoint point = fgsys.getFGGPSManager()
-                            .getGeoPointCurrent();
+                                .getGeoPointCurrent();
                         if (point == null)
                             point = FinalValue.GEOPOINT_VICTORY;
 //                        fgsys.getFGMapManager().getMapController().setCenter(point);
@@ -189,10 +192,22 @@ public class FGActivity extends FFCFragmentActivity {
     }
     private void getCurrentLocation(){
 
-            MyLocationNewOverlay mLocation = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()), mapView);
+            final MyLocationNewOverlay mLocation = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()), mapView);
             mLocation.enableMyLocation();
             mLocation.enableFollowLocation();
             mapView.getOverlays().add(mLocation);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(mLocation != null){
+                            if(mLocation.isFollowLocationEnabled()){
+                                mLocation.disableFollowLocation();
+                            }
+                        }
+                        IMapController controller = mapView.getController();
+                        controller.animateTo(mLocation.getMyLocation());
+                    }
+                }, 8000);
 
     }
     private void requestPermissionsIfNecessary(String[] permissions) {
@@ -221,8 +236,11 @@ public class FGActivity extends FFCFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        LoadStart();
+    }
+    private void LoadStart(){
         SharedPreferences prefsFamilyTree = getSharedPreferences(
-            FamilyTree.PREFS_NAME, Context.MODE_PRIVATE);
+                FamilyTree.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefsFamilyTree.edit();
         editor.putBoolean(FamilyTree.PREFS_FIRST, true);
         editor.putInt(FamilyTree.PREFS_FOCUS, 1);
@@ -231,8 +249,6 @@ public class FGActivity extends FFCFragmentActivity {
         FamilyFolderCollector ffc = (FamilyFolderCollector) getApplicationContext();
 
         ffc.mFamilys = new HashMap<Integer, Family>();
-
-
         if (fgsys == null) {
             Log.i("TAG!", "First time NULL!!");
             Runnable r = new Runnable() {
@@ -240,10 +256,11 @@ public class FGActivity extends FFCFragmentActivity {
                 public void run() {
                     fgsys = new FGSystemManager(FGActivity.this);
                     Log.d("TAG!", "Completed This Thread!");
+
                 }
             };
             new GeneralAsyncTask(this, null, handler, INITIALIZE, FAILED)
-                .execute(r, null);
+                    .execute(r, null);
         } else if (!fgsys.getFGActivity().equals(this)) {
             Log.i("TAG!", "Not equal!");
             Runnable r = new Runnable() {
@@ -253,14 +270,12 @@ public class FGActivity extends FFCFragmentActivity {
                 }
             };
             new GeneralAsyncTask(this, null, handler, INITIALIZE, FAILED)
-                .execute(r, null);
+                    .execute(r, null);
         } else {
             Log.i("TAG!", "Normally functional");
             fgsys.getFGMapManager().checkGPS();
         }
-
     }
-
     @Override
     public boolean onSearchRequested() {
         Dialog dia = fgsys.getFGDialogManager().getDialogSearchHouseMarker();
@@ -274,7 +289,7 @@ public class FGActivity extends FFCFragmentActivity {
         if (conRec != null) {
             registerReceiver(conRec, new IntentFilter(
                 "android.net.conn.CONNECTIVITY_CHANGE"));
-            //fgsys.getFGMapManager().getMyLocationOverlay().enableMyLocation();
+//           this.recreate();
         }
     }
 
@@ -374,14 +389,14 @@ public class FGActivity extends FFCFragmentActivity {
         int mapStyle = FGMapManager.getCurrentMapStyle();
         int menuID = -1;
         switch (mapStyle) {
-            case FinalValue.INT_SATELLITE:
-                menuID = R.id.menu_sat;
+            case FinalValue.INT_SATELLITE_OVERLAY:
+                menuID = R.id.menu_sat_path;
                 break;
             case FinalValue.INT_GOOGLE_MAPS:
                 menuID = R.id.menu_normal;
                 break;
             default:
-                menuID = R.id.menu_sat_path;
+                menuID = R.id.menu_sat;
         }
         menu.findItem(menuID).setChecked(true);
 
@@ -396,35 +411,20 @@ public class FGActivity extends FFCFragmentActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_center:
-//                Location location = fgsys.getFGGPSManager().getLastKnownLocation();
-//                GeoPoint geoPointCurrent;
-//                MyLocationNewOverlay mLocation = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()), mapView);
-//                mLocation.enableMyLocation();
-//                mLocation.enableFollowLocation();
-                getCurrentLocation();
+                Location location = fgsys.getFGGPSManager().getLastKnownLocation();
+                GeoPoint geoPointCurrent;
+                MyLocationNewOverlay mLocation = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()), mapView);
                 Log.d("Tag(menu)","menu_center");
                 //TODO Change to Google Map
-//                if (mLocation.getLastFix() != null){
-//                    fgsys.getFGMapManager().getMapController()
-//                            .setCenter(mLocation.getMyLocation());
-//                } else if (location != null) {
-//                    geoPointCurrent = new GeoPoint(location.getLatitude(),
-//                            location.getLongitude());
-//                    fgsys.getFGMapManager().getMapController()
-//                            .setCenter(geoPointCurrent);
-//                }
-
-                // For testing-purpose only
-
-                // Spot[] set =
-                // fgsys.getFGDatabaseManager().getMarked().values().toArray(new
-                // Spot[fgsys.getFGDatabaseManager().getMarked().size()]);
-                // for (Spot spot : set) {
-                // fgsys.removeMarkerOnMap(spot);
-                // }
-                // fgsys.getFGMapManager().getMapView().invalidate();
-
-                // -------------------------
+                if (mLocation.getLastFix() != null){
+                    fgsys.getFGMapManager().getMapController()
+                            .setCenter(mLocation.getMyLocation());
+                } else if (location != null) {
+                    geoPointCurrent = new GeoPoint(location.getLatitude(),
+                            location.getLongitude());
+                    fgsys.getFGMapManager().getMapController()
+                            .setCenter(geoPointCurrent);
+                }
                 return true;
             case R.id.menu_filter:
                 this.startActivityForResult(
@@ -444,12 +444,25 @@ public class FGActivity extends FFCFragmentActivity {
                     Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                 return true;
             case R.id.menu_sat:
-                fgsys.getFGMapManager().setMapStyle(FinalValue.INT_SATELLITE);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        fgsys.getFGMapManager().setMapStyle(FinalValue.INT_SATELLITE);
+
+                    }
+                });
+//                fgsys.getFGMapManager().setMapStyle(FinalValue.INT_SATELLITE);
                 item.setChecked(true);
                 return true;
             case R.id.menu_sat_path:
-                fgsys.getFGMapManager().setMapStyle(
-                    FinalValue.INT_SATELLITE_OVERLAY);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        fgsys.getFGMapManager().setMapStyle(
+                                FinalValue.INT_SATELLITE_OVERLAY);
+                    }
+                });
+
                 item.setChecked(true);
                 return true;
             case R.id.menu_normal:

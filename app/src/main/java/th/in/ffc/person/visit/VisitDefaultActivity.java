@@ -31,6 +31,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.loader.app.LoaderManager;
 import androidx.loader.app.LoaderManager.LoaderCallbacks;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -39,12 +41,18 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.berry_med.monitordemo.activity.DeviceMainActivity;
+
 import th.in.ffc.R;
 import th.in.ffc.intent.Action;
+import th.in.ffc.provider.CodeProvider.SysSymtomco;
+import th.in.ffc.provider.CodeProvider.SysDiagnote;
 import th.in.ffc.provider.CodeProvider.HealthSuggest;
 import th.in.ffc.provider.CodeProvider.Symtom;
 import th.in.ffc.provider.CodeProvider.VitalSign;
@@ -69,7 +77,7 @@ public class VisitDefaultActivity extends VisitActivity implements
             Visit.WEIGHT, Visit.HEIGHT, Visit.ASS, Visit.WAIST, Visit.PRESSURE,
             Visit.PRESSURE_2, Visit.TEMPERATURE, Visit.PULSE,
 
-            Visit.SYMPTOMS, Visit.VITAL, Visit.HEALTH_SUGGEST_1,};
+            Visit.SYMPTOMS,Visit.SYMPTOMSCO, Visit.VITAL,Visit.DIAGNOTE, Visit.HEALTH_SUGGEST_1,};
 
     public static final String[] PERSON_PROJ = new String[]{
             Person.RIGHT_CODE, Person.RIGHT_NO, Person.RIGHT_HMAIN,
@@ -82,6 +90,10 @@ public class VisitDefaultActivity extends VisitActivity implements
     private static final int LOAD_VITALCHECK = 4;
     private static final int LOAD_HEALTSUGGEST = 5;
     private static final int LOAD_SAVED_VISIT = 6;
+    private static final int DEVICE_RESULT = 1;
+
+    private static final int LOAD_SYMTOMCO = 7;
+    private static final int LOAD_DIAGNOTE= 8;
 
     private String mVisitNo;
     private String mPid;
@@ -98,11 +110,14 @@ public class VisitDefaultActivity extends VisitActivity implements
     private EditText mPressure2;
     private EditText mPulse;
     private EditText mTemp;
+    private Button mBtnDeviceBerryMed;
 
     private String mTimeStart;
 
     private InstantAutoComplete mSymtom;
+    private InstantAutoComplete mSymtomsco;
     private InstantAutoComplete mVitalCheck;
+    private InstantAutoComplete mDiagnote;
     private InstantAutoComplete mHealthSuggest;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +188,8 @@ public class VisitDefaultActivity extends VisitActivity implements
         mVisitNo = null;
         mVitalCheck = null;
         mSymtom = null;
+        mSymtomsco = null;
+        mDiagnote = null;
         mHealthSuggest = null;
         mWaist = null;
         mAss = null;
@@ -223,7 +240,9 @@ public class VisitDefaultActivity extends VisitActivity implements
             cv.put(Visit.BMI, bmi);
         }
         et.retrieveData(Visit.SYMPTOMS, mSymtom, true, null, null);
+        et.retrieveData(Visit.SYMPTOMSCO, mSymtomsco, true, null, null);
         et.retrieveData(Visit.VITAL, mVitalCheck, true, null, null);
+        et.retrieveData(Visit.DIAGNOTE, mDiagnote, true, null, null);
         et.retrieveData(Visit.HEALTH_SUGGEST_1, mHealthSuggest, true, null,
                 null);
 
@@ -270,17 +289,25 @@ public class VisitDefaultActivity extends VisitActivity implements
     public void doSetupDiagnose(Cursor c) {
         mSymtom = (InstantAutoComplete) findViewById(R.id.symtom);
         mVitalCheck = (InstantAutoComplete) findViewById(R.id.vitalcheck);
+        mSymtomsco = (InstantAutoComplete) findViewById(R.id.symtomsco);
+        mDiagnote = (InstantAutoComplete) findViewById(R.id.diagnote);
         mHealthSuggest = (InstantAutoComplete) findViewById(R.id.healthsuggest);
 
         if (c == null) {
-            getSupportLoaderManager().initLoader(LOAD_SYMTOM, null, this);
-            getSupportLoaderManager().initLoader(LOAD_VITALCHECK, null, this);
-            getSupportLoaderManager().initLoader(LOAD_HEALTSUGGEST, null, this);
-        } else {
+            LoaderManager.getInstance(this).initLoader(LOAD_SYMTOM, null, this);
+            LoaderManager.getInstance(this).initLoader(LOAD_VITALCHECK, null, this);
+            LoaderManager.getInstance(this).initLoader(LOAD_HEALTSUGGEST, null, this);
+            LoaderManager.getInstance(this).initLoader(LOAD_SYMTOMCO, null, this);
+            LoaderManager.getInstance(this).initLoader(LOAD_DIAGNOTE, null, this);
+      } else {
             if (TextUtils.isEmpty(mSymtom.getText()))
                 mSymtom.setText(c.getString(c.getColumnIndex(Visit.SYMPTOMS)));
+            if (TextUtils.isEmpty(mSymtomsco.getText()))
+                mSymtomsco.setText(c.getString(c.getColumnIndex(Visit.SYMPTOMSCO)));
             if (TextUtils.isEmpty(mVitalCheck.getText()))
                 mVitalCheck.setText(c.getString(c.getColumnIndex(Visit.VITAL)));
+            if (TextUtils.isEmpty(mDiagnote.getText()))
+                mDiagnote.setText(c.getString(c.getColumnIndex(Visit.DIAGNOTE)));
             if (TextUtils.isEmpty(mHealthSuggest.getText()))
                 mHealthSuggest.setText(c.getString(c
                         .getColumnIndex(Visit.HEALTH_SUGGEST_1)));
@@ -299,7 +326,14 @@ public class VisitDefaultActivity extends VisitActivity implements
         mPressure2 = (EditText) findViewById(R.id.pressure2);
         mPulse = (EditText) findViewById(R.id.pulse);
         mTemp = (EditText) findViewById(R.id.temperature);
-
+        mBtnDeviceBerryMed = (Button) findViewById(R.id.btnDeviceBerryMed);
+        mBtnDeviceBerryMed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), DeviceMainActivity.class);
+                startActivityForResult(intent,DEVICE_RESULT);
+            }
+        });
         if (c != null) {
             mInCup.setChecked(c.getInt(c.getColumnIndex(Visit.INCUP)) == 1 ? true
                     : false);
@@ -324,7 +358,59 @@ public class VisitDefaultActivity extends VisitActivity implements
                 mPulse.setText(c.getString(c.getColumnIndex(Visit.PULSE)));
             if (TextUtils.isEmpty(mTemp.getText()))
                 mTemp.setText(c.getString(c.getColumnIndex(Visit.TEMPERATURE)));
+
+
+
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == DEVICE_RESULT) {
+                String ecgInfo = data.getStringExtra("ECGInfo");
+                String spO2Info = data.getStringExtra("SPO2Info");
+
+                String tempInfo = data.getStringExtra("TEMPInfo");
+                String nibpInfo = data.getStringExtra("NIBPInfo");
+
+                String[] ecgTemp = ecgInfo.split(":");
+                String heartRate = ecgTemp[1].replace("Resp Rate", "");
+                String RespRate = ecgTemp[2];
+
+                String[] spO2Temp = spO2Info.split(":");
+                String spO2 = spO2Temp[1].replace("SPO2", "");
+                String spO2PluseRate = spO2Temp[2];
+
+                String strHigh = "High:";
+                String strLow = "Low:";
+                String strMean = "Mean:";
+                int indexHigh = nibpInfo.indexOf(strHigh);
+                int indexLow = nibpInfo.indexOf(strLow);
+                int indexMean = nibpInfo.indexOf(strMean);
+                String hight = nibpInfo.substring(indexHigh+strHigh.length(),indexLow-1);
+                String low = nibpInfo.substring(indexLow+strLow.length(),indexMean-1);
+                String tmp = tempInfo.replace("TEMP:", "").replace("°C", "").trim();
+                if (tmp.trim().indexOf("-") < 0) {
+                    mTemp.setText(tmp);
+                }
+                if (hight.indexOf("-") < 0) {
+                    mPressure.setText(hight);
+                }
+                if (low.indexOf("-") < 0) {
+                    mPressure2.setText(low);
+                }
+//                if(spO2PluseRate.indexOf("-")<0) {
+//
+//                    mPulse.setText(spO2PluseRate);
+//                }
+                if (RespRate.indexOf("-") < 0) {
+                    mPulse.setText(RespRate);
+                }
+            }
+        }
+
     }
 
     @Override
@@ -349,6 +435,14 @@ public class VisitDefaultActivity extends VisitActivity implements
                 return new CursorLoader(this, Symtom.CONTENT_URI, new String[]{
                         Symtom._ID, Symtom.NAME}, null, null,
                         Symtom.DEFAULT_SORTING);
+            case LOAD_SYMTOMCO:
+                return new CursorLoader(this, SysSymtomco.CONTENT_URI, new String[]{
+                        SysSymtomco._ID, SysSymtomco.NAME}, null, null,
+                        SysSymtomco.DEFAULT_SORTING);
+            case LOAD_DIAGNOTE:
+                return new CursorLoader(this, SysDiagnote.CONTENT_URI, new String[]{
+                        SysDiagnote._ID, SysDiagnote.NAME}, null, null,
+                        SysDiagnote.DEFAULT_SORTING);
             case LOAD_VITALCHECK:
                 return new CursorLoader(this, VitalSign.CONTENT_URI,
                         new String[]{VitalSign.NAME}, null, null,
@@ -394,6 +488,14 @@ public class VisitDefaultActivity extends VisitActivity implements
             case LOAD_SYMTOM:
                 mSymtom.setAdapter(InstantAutoComplete.getAdapter(this, c,
                         c.getColumnIndex(Symtom.NAME)));
+                break;
+            case LOAD_SYMTOMCO:
+                mSymtomsco.setAdapter(InstantAutoComplete.getAdapter(this, c,
+                        c.getColumnIndex(SysSymtomco.NAME)));
+                break;
+            case LOAD_DIAGNOTE:
+                mDiagnote.setAdapter(InstantAutoComplete.getAdapter(this, c,
+                        c.getColumnIndex(SysDiagnote.NAME)));
                 break;
             case LOAD_VITALCHECK:
                 mVitalCheck.setAdapter(InstantAutoComplete.getAdapter(this, c,

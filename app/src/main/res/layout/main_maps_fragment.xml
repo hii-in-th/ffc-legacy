@@ -61,22 +61,22 @@
                 android:visibility="visible"/>
     </LinearLayout>
 
-    <LinearLayout
-            android:id="@+id/linearlayout_nectec"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:paddingBottom="0px"
-            android:paddingRight="0px">
+<!--    <LinearLayout-->
+<!--            android:id="@+id/linearlayout_nectec"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:paddingBottom="0px"-->
+<!--            android:paddingRight="0px">-->
 
-        <ImageButton
-                android:id="@+id/imagebutton_nectec"
-                android:layout_width="86dp"
-                android:layout_height="70dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/nectec_25th"
-                android:visibility="visible"/>
-    </LinearLayout>
+<!--        <ImageButton-->
+<!--                android:id="@+id/imagebutton_nectec"-->
+<!--                android:layout_width="86dp"-->
+<!--                android:layout_height="70dp"-->
+<!--                android:layout_alignParentBottom="true"-->
+<!--                android:layout_centerHorizontal="true"-->
+<!--                android:background="@drawable/nectec_25th"-->
+<!--                android:visibility="visible"/>-->
+<!--    </LinearLayout>-->
 </RelativeLayout>

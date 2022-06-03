@@ -39,6 +39,10 @@
     <color name="red">#EE0000</color>
     <color name="yellow">#ff8c00</color>
     <color name="orange">#ffc500</color>
+    <color name="overlay_black">#79000000</color>
 
+    <color name="colorPrimary">#f8fdfc</color>
+    <color name="colorPrimaryDark">#BDBDBD</color>
 
+    <color name="colorAccent">#4CBD94</color>
 </resources>

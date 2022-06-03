@@ -151,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/visitnutrition.nlevel1"/>
 
-        <EditText
+        <Spinner
                 android:id="@+id/answer9"
                 style="@style/FFC.TextView.Content"
                 android:layout_width="fill_parent"

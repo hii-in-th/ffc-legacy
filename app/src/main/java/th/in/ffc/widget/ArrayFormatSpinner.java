@@ -43,7 +43,7 @@ import java.util.ArrayList;
  * @version 1.1
  * @since Family Folder Collector plus
  */
-public class ArrayFormatSpinner extends Spinner {
+public class ArrayFormatSpinner extends androidx.appcompat.widget.AppCompatSpinner {
 
     /**
      * @param context

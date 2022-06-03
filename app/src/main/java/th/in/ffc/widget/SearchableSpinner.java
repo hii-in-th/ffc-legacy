@@ -46,7 +46,7 @@ import th.in.ffc.app.FFCSearchListDialog.ItemClickListener;
  * @version 1.0
  * @since 1.0
  */
-public class SearchableSpinner extends Spinner implements ItemClickListener {
+public class SearchableSpinner extends androidx.appcompat.widget.AppCompatSpinner implements ItemClickListener {
 
     FFCSearchListDialog f;
     FragmentManager fm;

@@ -10,6 +10,10 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import th.in.ffc.R;
 import th.in.ffc.app.FFCFragment;
 import th.in.ffc.godmode.godMain;
@@ -85,6 +89,7 @@ public class LoginFragment extends FFCFragment implements
     }
 
     private synchronized void doLogin(String user, String pass) {
+
         if (user.length() <= 0 || pass.length() <= 0) {
             mListener.onLoginFailre(getString(R.string.enter_user_pass));
         } else {
@@ -93,9 +98,13 @@ public class LoginFragment extends FFCFragment implements
                     .getReadableDatabase();
 
             String[] columns = new String[]{User.PCUCODE, User.USERNAME};
-            String selection = "username=? AND password=?";
-            String[] selectionArgs = new String[]{user,
-                    MessageDigester.getSha256String(pass)};
+            String selection = "username=? AND (password=? OR password=?)" ;
+            String[] selectionArgs = new String[]
+                    {
+                        user,
+                        MessageDigester.getSha256String(pass),
+                        MessageDigester.getSha256String(md5(pass))
+                    };
 
             Cursor cur = userDb.query(User.TABLENAME, columns, selection,
                     selectionArgs, null, null, null);
@@ -116,7 +125,30 @@ public class LoginFragment extends FFCFragment implements
 
         }
     }
+    public static String md5(final String s) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
 
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
     public void clearPassword() {
         mEditTextPassword.setText(null);
     }

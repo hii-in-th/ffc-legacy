@@ -148,7 +148,7 @@ public class NCDRiskBall implements LoaderCallbacks<Cursor> {
                 cl = new CursorLoader(context, queryRedBall, projection2, where, null, "birth");
                 break;
             case 3:
-                String[] projection3 = {"pid", "hcode", "hno", "xgis", "ygis", "pid", "birth", "pcucodeperson", "fname", "lname", "villno", "villname", "villcode", "labresultdigit", "bsl", "hbp_s1", "hbp_d1", "hbp_s2", "hbp_d2", "labcode"};
+                String[] projection3 = {"distinct pid", "hcode", "hno", "xgis", "ygis", "pid", "birth", "pcucodeperson", "fname", "lname", "villno", "villname", "villcode", "labresultdigit", "bsl", "hbp_s1", "hbp_d1", "hbp_s2", "hbp_d2", "labcode"};
                 where = "villno != 0  AND (groupcode IN('01','10') AND " +
                         "((((ncd_person_ncd_screen.hbp_s2 IS NOT NULL AND ncd_person_ncd_screen.hbp_s2  BETWEEN 140 and 159) "
                         + "OR (ncd_person_ncd_screen.hbp_s2  IS NULL AND ncd_person_ncd_screen.hbp_s1  BETWEEN 140 and 159))"

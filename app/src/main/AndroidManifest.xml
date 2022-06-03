@@ -5,6 +5,10 @@
             android:name="th.in.ffc.permission.MAPS_RECEIVE"
             android:protectionLevel="signature">
     </permission>
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="th.in.ffc.permission.MAPS_RECEIVE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -26,6 +30,8 @@
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:largeHeap="true"
+            android:usesCleartextTraffic="true"
+            android:requestLegacyExternalStorage="true"
             android:theme="@style/FFC.Theme.Light">
         <meta-data
             android:name="com.google.android.gms.version"
@@ -74,7 +80,7 @@
 
         <service
                 android:name=".security.CryptographerService"
-                android:exported="false">
+                android:exported="false" >
             <intent-filter>
                 <action android:name="ffc.intent.action.ENCRYPT"/>
             </intent-filter>
@@ -1068,7 +1074,9 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-
+        <activity
+            android:name="com.berry_med.monitordemo.activity.DeviceMainActivity">
+        </activity>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="985b93fe45ed65dc37e25e81a8c5ce5ba9c217fa"/>

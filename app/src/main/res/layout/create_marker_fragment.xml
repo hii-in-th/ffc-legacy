@@ -138,6 +138,7 @@
                         android:layout_marginTop="2dp"
                         android:gravity="left"
                         android:inputType="numberDecimal"
+                        android:textSize="16dp"
                         android:maxLength="50"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textStyle="bold"/>
@@ -168,6 +169,7 @@
                         android:layout_marginRight="2dp"
                         android:layout_marginTop="0px"
                         android:gravity="left"
+                        android:textSize="16dp"
                         android:inputType="numberDecimal"
                         android:maxLength="50"
                         android:textStyle="bold"/>

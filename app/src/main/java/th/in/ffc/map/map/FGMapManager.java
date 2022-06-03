@@ -17,11 +17,16 @@ import android.widget.ImageButton;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import org.osmdroid.api.IMapController;
 //import org.osmdroid.google.wrapper.MyLocationOverlay;
 //import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourcePolicy;
+import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.util.MapTileIndex;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -89,7 +94,9 @@ public class FGMapManager implements OnClickListener {
 
     public FGMapManager(FGSystemManager fgSystemManager) {
         this.fgSystemManager = fgSystemManager;
-
+        reloadMap();
+    }
+    public void reloadMap(){
         group_check = new boolean[MARKER_TYPE.size];
         Arrays.fill(group_check, true);
 
@@ -99,41 +106,41 @@ public class FGMapManager implements OnClickListener {
         this.gesture = new ItemGestureListener(fgSystemManager);
         // Download Google API
         requirePermission();
-       InputStream target = null;
+        InputStream target = null;
 
-       File previous = this.fgSystemManager.getFGActivity().getFileStreamPath("map-loaded");
-       String filename_current = downloadFile();
+        File previous = this.fgSystemManager.getFGActivity().getFileStreamPath("map-loaded");
+        String filename_current = downloadFile();
 
-       if (filename_current != null) {
-           File current = this.fgSystemManager.getFGActivity().getFileStreamPath(filename_current);
-           previous.delete();
-           current.renameTo(previous);
+        if (filename_current != null) {
+            File current = this.fgSystemManager.getFGActivity().getFileStreamPath(filename_current);
+            previous.delete();
+            current.renameTo(previous);
 
-           Log.d("TAG!", "Download file is completed");
-           try {
-               target = new FileInputStream(previous);
-           } catch (FileNotFoundException e) {
-               e.printStackTrace();
-           }
-       } else if (previous.exists()) {
+            Log.d("TAG!", "Download file is completed");
+            try {
+                target = new FileInputStream(previous);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else if (previous.exists()) {
 
-           Log.d("TAG!", "Download file is NOT completed, use the previous one");
-           try {
-               target = new FileInputStream(previous);
-           } catch (FileNotFoundException e) {
-               e.printStackTrace();
-           }
-       } else {
+            Log.d("TAG!", "Download file is NOT completed, use the previous one");
+            try {
+                target = new FileInputStream(previous);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
 
-           Log.d("TAG!", "No previous file, cannot download, fall back! fall back!");
-           try {
-               target = this.fgSystemManager.getFGActivity().getAssets().open("maps-fallback");
-           } catch (IOException e) {
-               e.printStackTrace();
-           }
-       }
+            Log.d("TAG!", "No previous file, cannot download, fall back! fall back!");
+            try {
+                target = this.fgSystemManager.getFGActivity().getAssets().open("maps-fallback");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-       this.tokenize(target);
+        this.tokenize(target);
 
         // ----
 
@@ -146,8 +153,13 @@ public class FGMapManager implements OnClickListener {
         this.mapController = this.mapView.getController();
 //        Context ctx = this.getMapView().getContext();
 //        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+        fgActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setMapStyle(FinalValue.INT_SATELLITE);
+            }
+        });
 
-        setMapStyle(FinalValue.INT_SATELLITE_OVERLAY);
 
         this.mapView.setUseDataConnection(true);
 
@@ -159,7 +171,6 @@ public class FGMapManager implements OnClickListener {
 
         checkGPS();
     }
-
     public void checkGPS() {
 
         LocationManager lm = fgSystemManager.getFGGPSManager().getLocationManager();
@@ -201,13 +212,13 @@ public class FGMapManager implements OnClickListener {
 
         switch (newStyle) {
             case FinalValue.INT_SATELLITE:
-//                mapView.setTileSource(this.initializeSatellite());
+                mapView.setTileSource(GoogleSat);
                 break;
             case FinalValue.INT_SATELLITE_OVERLAY:
-//                mapView.setTileSource(this.initializeSatellite());
+                mapView.setTileSource(TileSourceFactory.MAPNIK);
                 break;
             case FinalValue.INT_GOOGLE_MAPS:
-//                mapView.setTileSource(initializeGoogleMaps());
+                mapView.setTileSource(GoogleRoads);
                 break;
         }
 
@@ -219,7 +230,31 @@ public class FGMapManager implements OnClickListener {
 
         currentMapStyle = newStyle;
     }
-
+    // Google satellite
+    public static final OnlineTileSourceBase GoogleSat = new XYTileSource("Google-Sat",
+            0, 19, 512, ".png", new String[]{
+            "http://mt0.google.cn",
+            "http://mt1.google.cn",
+            "http://mt2.google.cn",
+            "http://mt3.google.cn",
+    }) {
+        @Override
+        public String getTileURLString(long pMapTileIndex) {
+            return getBaseUrl() + "/vt/lyrs=s&scale=2&hl=zh-CN&gl=CN&src=app&x=" + MapTileIndex.getX(pMapTileIndex) + "&y=" + MapTileIndex.getY(pMapTileIndex) + "&z=" + MapTileIndex.getZoom(pMapTileIndex);
+        }
+    };
+    public static final OnlineTileSourceBase GoogleRoads = new XYTileSource("Google-Roads",
+            0, 18, 512, ".png", new String[]{
+            "http://mt0.google.cn",
+            "http://mt1.google.cn",
+            "http://mt2.google.cn",
+            "http://mt3.google.cn",
+    }) {
+        @Override
+        public String getTileURLString(long pMapTileIndex) {
+            return getBaseUrl() + "/vt/lyrs=m&scale=2&hl=zh-CN&gl=CN&src=app&x=" + MapTileIndex.getX(pMapTileIndex) + "&y=" + MapTileIndex.getY(pMapTileIndex) + "&z=" + MapTileIndex.getZoom(pMapTileIndex);
+        }
+    };
     public static int getCurrentMapStyle() {
         return currentMapStyle;
     }
@@ -233,22 +268,18 @@ public class FGMapManager implements OnClickListener {
                 Manifest.permission.INTERNET
         });
     }
-    private OnlineTileSourceBase initializeSatellite() {
-        if (sourceBase == null || (!sourceBase.name().equals("Google_Satellite"))) {
-            sourceBase = new OnlineTileSourceBase("Google_Satellite", 1, 19, 256, ".jpg",
-                    sat_url.toArray(new String[sat_url.size()])) {
-                @Override
-                public String getTileURLString(long l) {
-                    return null;
-                }
+//    private OnlineTileSourceBase initializeSatellite() {
+//        if (sourceBase == null || (!sourceBase.name().equals("Google_Satellite"))) {
+//            sourceBase = new OnlineTileSourceBase("Google_Satellite", 1, 19, 256, ".jpg",
+//                    sat_url.toArray(new String[sat_url.size()])) {
 //                @Override
-//                public String getTileURLString(final MapTile aTile) {
-//                    return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
+//                public String getTileURLString(long l) {
+//                    return null;
 //                }
-            };
-        }
-        return sourceBase;
-    }
+//            };
+//        }
+//        return sourceBase;
+//    }
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
@@ -263,46 +294,46 @@ public class FGMapManager implements OnClickListener {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
-    private OnlineTileSourceBase initializeGoogleMaps() {
-       if (sourceBase == null || (!sourceBase.name().equals("Google_Maps"))) {
-           sourceBase = new OnlineTileSourceBase("Google_Maps", 1, 20, 256, ".jpg",
-                   maps_url.toArray(new String[maps_url.size()])) {
-               @Override
-               public String getTileURLString(long pMapTileIndex) {
-                   return null;
-               }
+//    private OnlineTileSourceBase initializeGoogleMaps() {
+//       if (sourceBase == null || (!sourceBase.name().equals("Google_Maps"))) {
+//           sourceBase = new OnlineTileSourceBase("Google_Maps", 1, 20, 256, ".jpg",
+//                   maps_url.toArray(new String[maps_url.size()])) {
 //               @Override
-//               public String getTileURLString(final MapTile aTile) {
-//                   return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
+//               public String getTileURLString(long pMapTileIndex) {
+//                   return null;
 //               }
-           };
-       }
-        return sourceBase;
-    }
+////               @Override
+////               public String getTileURLString(final MapTile aTile) {
+////                   return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
+////               }
+//           };
+//       }
+//        return sourceBase;
+//    }
 
-    private TilesOverlay initializeGoogleOverlay() {
-        if (tileProvider == null) {
-            tileProvider = new MapTileProviderBasic(this.fgSystemManager.getFGActivity());
-           final ITileSource tileSource = new OnlineTileSourceBase("Google_Hybrid", 1, 19, 256, ".png",
-                   hybrid_url.toArray(new String[hybrid_url.size()])) {
-               @Override
-               public String getTileURLString(long pMapTileIndex) {
-                   return null;
-               }
+//    private TilesOverlay initializeGoogleOverlay() {
+//        if (tileProvider == null) {
+//            tileProvider = new MapTileProviderBasic(this.fgSystemManager.getFGActivity());
+//           final ITileSource tileSource = new OnlineTileSourceBase("Google_Hybrid", 1, 19, 256, ".png",
+//                   hybrid_url.toArray(new String[hybrid_url.size()])) {
 //               @Override
-//               public String getTileURLString(final MapTile aTile) {
-//
-//                   return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
+//               public String getTileURLString(long pMapTileIndex) {
+//                   return null;
 //               }
-           };
-           tileProvider.setTileSource(tileSource);
-        }
-        if (tilesOverlay == null) {
-            tilesOverlay = new TilesOverlay(tileProvider, this.fgSystemManager.getFGActivity());
-            tilesOverlay.setLoadingBackgroundColor(Color.TRANSPARENT);
-        }
-        return tilesOverlay;
-    }
+////               @Override
+////               public String getTileURLString(final MapTile aTile) {
+////
+////                   return getBaseUrl() + "x=" + aTile.getX() + "&y=" + aTile.getY() + "&z=" + aTile.getZoomLevel();
+////               }
+//           };
+//           tileProvider.setTileSource(tileSource);
+//        }
+//        if (tilesOverlay == null) {
+//            tilesOverlay = new TilesOverlay(tileProvider, this.fgSystemManager.getFGActivity());
+//            tilesOverlay.setLoadingBackgroundColor(Color.TRANSPARENT);
+//        }
+//        return tilesOverlay;
+//    }
 
     // private void initialImageButtonMenu() {
     // FGActivity fgActivity = this.fgSystemManager.getFGActivity();

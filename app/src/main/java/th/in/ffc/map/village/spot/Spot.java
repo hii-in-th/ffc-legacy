@@ -13,10 +13,11 @@ public class Spot extends OverlayItem {
 
     // protected String stringVillName;
 
-    protected String stringVillCode;
-    protected int intPartialID;
-    private Bundle mBundle;
-    protected String pcucode;
+    public String stringVillCode;
+    public int intPartialID;
+    public Bundle mBundle;
+    public GeoPoint mGeoPoint;
+    public String pcucode;
 
     public Spot(String pcucode, MARKER_TYPE type, String stringVillCode,
                 int intPartialID, double doubleLat, double doubleLong,
@@ -27,7 +28,7 @@ public class Spot extends OverlayItem {
         this.pcucode = pcucode;
         this.stringVillCode = stringVillCode;
         this.intPartialID = intPartialID;
-
+        this.mGeoPoint = new GeoPoint(doubleLat, doubleLong);
         this.mBundle = mBundle;
     }
 
@@ -56,22 +57,27 @@ public class Spot extends OverlayItem {
     }
 
     public double getDoubleLong() {
-        return ((double) this.mGeoPoint.getLongitudeE6()) / 1E6;
+
+//        return ((double) this.mGeoPoint.getLongitudeE6()) / 1E6;
+        return (double) this.mGeoPoint.getLongitude();
     }
 
     public double getDoubleLat() {
-        return ((double) this.mGeoPoint.getLatitudeE6()) / 1E6;
+//        return ((double) this.mGeoPoint.getLatitudeE6()) / 1E6;
+        return (double) this.mGeoPoint.getLatitude();
     }
 
     //TODO Change to Google Map
-/*    public void setLatitude(double arg0) {
-        this.mGeoPoint.setLatitudeE6((int) (arg0 * 1E6));
+    public void setLatitude(double arg0) {
+//        this.mGeoPoint.setLatitude((int) (arg0 * 1E6));
+        this.mGeoPoint.setLatitude(arg0 );
     }
 
     //TODO Change to Google Map
     public void setLongitude(double arg0) {
-        this.mGeoPoint.setLongitudeE6((int) (arg0 * 1E6));
-    }*/
+//        this.mGeoPoint.setLongitude((int) (arg0 * 1E6));
+        this.mGeoPoint.setLongitude(arg0);
+    }
 
     public String getID() {
         return pcucode + "h" + this.intPartialID;

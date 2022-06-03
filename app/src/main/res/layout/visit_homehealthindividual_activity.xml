@@ -75,61 +75,62 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_autocomplete"/>
 
-        <TextView
-                style="@style/FFC.TextView.Subject"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/visithomehealthindividual.dateappoint"/>
+<!--        <TextView-->
+<!--            style="@style/FFC.TextView.Subject"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/visithomehealthindividual.symptoms"/>-->
+<!--        <EditText-->
+<!--            android:id="@+id/symptoms"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"/>-->
+<!--        <TextView-->
+<!--            style="@style/FFC.TextView.Subject"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/visithomehealthindividual.symptomsco"/>-->
+<!--        <EditText-->
+<!--            android:id="@+id/symptomsco"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"/>-->
+<!--        <TextView-->
+<!--            style="@style/FFC.TextView.Subject"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/visithomehealthindividual.vitalcheck"/>-->
+<!--        <EditText-->
+<!--            android:id="@+id/vitalcheck"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"/>-->
+<!--        <TextView-->
+<!--            style="@style/FFC.TextView.Subject"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/visithomehealthindividual.healthsuggest1"/>-->
+<!--        <EditText-->
+<!--            android:id="@+id/healthsuggest1"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"/>-->
+<!--        <TextView-->
+<!--            style="@style/FFC.TextView.Subject"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/visithomehealthindividual.dateappoint"/>-->
 
         <CheckBox
-                android:id="@+id/checkappoint"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:checked="false"
-                android:text="@string/checkdue"/>
+            android:id="@+id/checkappoint"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:checked="false"
+            android:text="@string/checkdue"/>
 
         <th.in.ffc.util.ThaiDatePicker
-                android:id="@id/answer6"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
+            android:id="@id/answer6"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
         </th.in.ffc.util.ThaiDatePicker>
-        <TextView
-            style="@style/FFC.TextView.Subject"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/visithomehealthindividual.symptoms"/>
-        <EditText
-            android:id="@+id/symptoms"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <TextView
-            style="@style/FFC.TextView.Subject"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/visithomehealthindividual.symptomsco"/>
-        <EditText
-            android:id="@+id/symptomsco"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <TextView
-            style="@style/FFC.TextView.Subject"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/visithomehealthindividual.vitalcheck"/>
-        <EditText
-            android:id="@+id/vitalcheck"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <TextView
-            style="@style/FFC.TextView.Subject"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/visithomehealthindividual.healthsuggest1"/>
-        <EditText
-            android:id="@+id/healthsuggest1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+
     </LinearLayout>
 
 </ScrollView>

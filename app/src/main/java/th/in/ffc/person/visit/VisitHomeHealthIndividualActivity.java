@@ -1,14 +1,17 @@
 package th.in.ffc.person.visit;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.Spinner;
 import th.in.ffc.R;
 import th.in.ffc.app.FFCEditActivity;
@@ -16,11 +19,12 @@ import th.in.ffc.provider.CodeProvider.HomeHealthEvalPlan;
 import th.in.ffc.provider.CodeProvider.HomeHealthServiceCare;
 import th.in.ffc.provider.CodeProvider.HomeHealthSign;
 import th.in.ffc.provider.CodeProvider.HomeHealthType;
+import th.in.ffc.provider.PersonProvider;
 import th.in.ffc.provider.PersonProvider.VisitIndividual;
 import th.in.ffc.util.ThaiDatePicker;
 import th.in.ffc.widget.CursorStringIdAdapter;
 import th.in.ffc.widget.J_InstantAutoComplete;
-
+import th.in.ffc.provider.PersonProvider.Visit;
 import java.util.Calendar;
 
 public class VisitHomeHealthIndividualActivity extends FFCEditActivity {
@@ -60,7 +64,6 @@ public class VisitHomeHealthIndividualActivity extends FFCEditActivity {
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
         dateappoint.updateDate(year, month, day);
-
         checkappoint.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override
@@ -119,13 +122,13 @@ public class VisitHomeHealthIndividualActivity extends FFCEditActivity {
                         VisitIndividual.PCUCODE, VisitIndividual.VISITNO,
                         VisitIndividual.TYPE, VisitIndividual.PATIENTSIGN,
                         VisitIndividual.DETAIL, VisitIndividual.RESULT,
-                        VisitIndividual.PLAN, VisitIndividual.DATEAPPOINT},
+                        VisitIndividual.PLAN, VisitIndividual.DATEAPPOINT
+                },
                 "visitno = ?", new String[]{share_visitno},
                 VisitIndividual.DEFAULT_SORTING);
         if (cursorChecker == true) {
             setContentForUpdate();
         }
-
     }
 
     private void setContentForUpdate() {
@@ -145,7 +148,6 @@ public class VisitHomeHealthIndividualActivity extends FFCEditActivity {
             updatePicker(dateappoint, R.id.answer6, array[7]);
         }
     }
-
 
     @Override
     protected void Delete() {
@@ -175,15 +177,14 @@ public class VisitHomeHealthIndividualActivity extends FFCEditActivity {
         retrieveDataFromEditText(detail, cv, "homehealthdetail");
         retrieveDataFromEditText(result, cv, "homehealthresult");
         retrieveDataFromEditText(plan, cv, "homehealthplan");
+
         if (checkappoint.isChecked()) {
             retrieveDataFromThaiDatePicker(dateappoint, cv, "dateappoint", checkappoint.isChecked());
 //			canCommit = checkSickDate(dateappoint);
         } else
             cv.putNull("dateappoint");
         cv.put("user", getIntent().getStringExtra(EXTRA_USER));
-
         doCommit(cv, VisitIndividual.CONTENT_URI, canCommit);
-
     }
 
 }

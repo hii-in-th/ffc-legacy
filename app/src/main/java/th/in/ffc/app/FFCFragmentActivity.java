@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.pm.ServiceInfo;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ import th.in.ffc.util.Log;
 import th.in.ffc.util.StopWatch;
 
 import java.io.File;
+import java.security.Provider;
 import java.util.List;
 
 /**
@@ -120,8 +122,6 @@ public class FFCFragmentActivity extends TrackingFragmentActivity implements
         super.onCreate(savedInstanceState);
         super.setTrackingCallback(this);
         this.getExtra();
-
-
         if (savedInstanceState == null)
             editPreferences(false);
 
@@ -130,6 +130,7 @@ public class FFCFragmentActivity extends TrackingFragmentActivity implements
             reLogin = true;
             editPreferences(reLogin);
         }
+        MyService();
     }
 
     @Override
@@ -487,30 +488,33 @@ public class FFCFragmentActivity extends TrackingFragmentActivity implements
 
         @Override
         public void run() {
-            Log.d("FFC", "relogin=" + reLogin);
-            reLogin = getPreferences();
-            if (!reLogin) {
-                Log.d("FFC", "relogin");
-                reLogin = true;
-                if (mTimerHandler == null)
-                    mTimerHandler = new Handler();
-                mTimerHandler.postDelayed(this, ENCRYPT_TIME_OUT);
-                editPreferences(true);
-            } else {
-                Log.d("FFC", "re-encrypt");
-                reLogin = true;
-                Intent encrypter = new Intent(FFCFragmentActivity.this, CryptographerService.class);
-                encrypter.setAction(Action.ENCRYPT);
-//                startService(encrypter);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(encrypter);
-                } else {
-                    startService(encrypter);
-                }
-            }
+            MyService();
         }
 
     };
+    private void MyService(){
+        Log.d("FFC", "relogin=" + reLogin);
+        reLogin = getPreferences();
+        if (!reLogin) {
+            Log.d("FFC", "relogin");
+            reLogin = true;
+            if (mTimerHandler == null)
+                mTimerHandler = new Handler();
+//             mTimerHandler.postDelayed(this, ENCRYPT_TIME_OUT);
+            editPreferences(true);
+        } else {
+            Log.d("FFC", "re-encrypt");
+            reLogin = true;
+            Intent encrypter = new Intent(FFCFragmentActivity.this, CryptographerService.class);
+            encrypter.setAction(Action.ENCRYPT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                startForegroundService(encrypter);
+            }
+            else {
+                startService(encrypter);
+            }
+        }
+    }
 
     private void editPreferences(boolean reLogin) {
         SharedPreferences prefer = getSharedPreferences(FFCFragmentActivity.PREF_NAME, Context.MODE_PRIVATE);

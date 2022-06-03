@@ -30,7 +30,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import com.ibus.phototaker.ImageResizer;
 import com.ibus.phototaker.PhotoTaker;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import th.in.ffc.R;
 import th.in.ffc.app.FFCFragment;
@@ -498,47 +500,39 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
 
             SpinnerItem selected = infoResult;
 
-            Spot spot = this.fgSystemManager.getFGDatabaseManager()
-                    .getSpotInAvailable(type + "_" + selected.getID());
+            Spot spot = this.fgSystemManager.getFGDatabaseManager().getSpotInAvailable(type + "_" + selected.getID());
 
             String stringLatitude = this.editTextLatitude.getText().toString();
+            String stringLongitude = this.editTextLongitude.getText().toString();
             double doubleLatitude = Double.parseDouble(stringLatitude);
-
-            String stringLongitude = this.editTextLongitude.getText()
-                    .toString();
             double doubleLongitude = Double.parseDouble(stringLongitude);
 
-/*            spot.setLatitude(doubleLatitude);
-            spot.setLongitude(doubleLongitude);*/
-
+            Spot builder = new Spot(spot.pcucode, type, spot.stringVillCode, spot.intPartialID, doubleLatitude, doubleLongitude, spot.getBundle());
+//
+//            spot.setLatitude(doubleLatitude);
+//            spot.setLongitude(doubleLongitude);
             Drawable drawable = image_location.getDrawable();
             Bitmap bmp = null;
             if (drawable != null) {
                 if (drawable instanceof BitmapDrawable) {
                     bmp = ((BitmapDrawable) drawable).getBitmap();
-
                     pt.writeBitmapToFile(type, spot.getID(), bmp);
-
                     File myFilesDir = new File(FGActivity.getPictureDir()
                             + type);
                     File thumbOut = new File(myFilesDir, spot.getID()
                             + "_thumb.jpg");
-
                     ImageResizer.doResizeImage(bmp, thumbOut);
-
                 }
-
             }
 
             // Toast.makeText(this.fgSystemManager.getFGActivity(),
             // "success="+b, Toast.LENGTH_LONG).show();
 
-            this.fgSystemManager.markMarkerOnMap(spot);
+            this.fgSystemManager.markMarkerOnMap(builder);
+//            IMapController mapController = this.fgSystemManager
+//                    .getFGMapManager().getMapController();
+//            mapController.setCenter(builder.getPoint());
 
-            IMapController mapController = this.fgSystemManager
-                    .getFGMapManager().getMapController();
-
-            mapController.setCenter(spot.getPoint());
 
         } else {
             Spot spot = this.fgSystemManager.getFGDatabaseManager()
@@ -552,8 +546,8 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
                     .toString();
             double doubleLongitude = Double.parseDouble(stringLongitude);
 
-/*            spot.setLatitude(doubleLatitude);
-            spot.setLongitude(doubleLongitude);*/
+            spot.setLatitude(doubleLatitude);
+            spot.setLongitude(doubleLongitude);
 
             Log.d("TAG!", "pic_changed=" + FGOverlayManager.pic_changed);
             if (FGOverlayManager.pic_changed) {
@@ -712,10 +706,10 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
                             public void onClick(DialogInterface dialog,
                                                 int which) {
                                 CreateBaseFragment.this.editTextLatitude
-                                        .setText((float) location.getLatitude()
+                                        .setText(location.getLatitude()
                                                 + "");
                                 CreateBaseFragment.this.editTextLongitude
-                                        .setText((float) location
+                                        .setText(location
                                                 .getLongitude() + "");
 
                             }

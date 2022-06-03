@@ -93,8 +93,8 @@ public class FGSystemManager {
         Double lon = spot.getDoubleLong();
 
         //TODO Change to Google Map
-/*        spot.setLatitude(0);
-        spot.setLongitude(0);*/
+        spot.setLatitude(0);
+        spot.setLongitude(0);
 
         if (this.fgDatabaseManager.updateGeoPointToDatabase(spot)) {
             spot.setMarker(null);
@@ -104,8 +104,8 @@ public class FGSystemManager {
             return true;
         } else {
             //TODO Change to Google Map
-/*            spot.setLatitude(lat);
-            spot.setLongitude(lon);*/
+            spot.setLatitude(lat);
+            spot.setLongitude(lon);
 
             return false;
         }
@@ -116,14 +116,15 @@ public class FGSystemManager {
             this.fgOverlayManager.markMarkerOnMap(spot);
             this.fgDatabaseManager.addSpotToMarked(spot);
         }
+
     }
 
     public void editMarkerOnMap(Spot spot) {
         if (this.fgDatabaseManager.updateGeoPointToDatabase(spot)) {
             this.fgMapManager.getMapView().invalidate();
             //TODO Change to Google Map
-            // this.fgOverlayManager.removeMarkerFromMap(spot);
-            // this.fgOverlayManager.markMarkerOnMap(spot);
+             this.fgOverlayManager.removeMarkerFromMap(spot);
+             this.fgOverlayManager.markMarkerOnMap(spot);
         }
     }
 

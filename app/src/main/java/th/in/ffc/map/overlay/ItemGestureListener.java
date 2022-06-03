@@ -70,7 +70,11 @@ public class ItemGestureListener implements
     }*/
 
     @Override public boolean onItemSingleTapUp(int i, Spot spot) {
-        return false;
+        if (spot.getUid().equals(MARKER_TYPE.HOUSE.name()))
+            FGActivity.fgsys.getFGActivity()
+                    .startFamilyTree(spot.getPartialID());
+
+        return true;
     }
 
     @Override
@@ -96,14 +100,14 @@ public class ItemGestureListener implements
     }
 
     //TODO Change to Google Map
-/*    @Override
-    public boolean onItemSingleTapConfirmed(int arg0, Spot spot) {
-
-        if (spot.getUid().equals(MARKER_TYPE.HOUSE.name()))
-            FGActivity.fgsys.getFGActivity()
-                    .startFamilyTree(spot.getPartialID());
-
-        return true;
-    }*/
+//    @Override
+//    public boolean onItemSingleTapConfirmed(int arg0, Spot spot) {
+//
+//        if (spot.getUid().equals(MARKER_TYPE.HOUSE.name()))
+//            FGActivity.fgsys.getFGActivity()
+//                    .startFamilyTree(spot.getPartialID());
+//
+//        return true;
+//    }
 
 }

@@ -121,7 +121,8 @@ public class CodeProvider extends ContentProvider {
     private static final int PERSONNEED_ITEM = 58;
     private static final int USEROFFICER = 61;
     private static final int USEROFFICER_ITEM = 62;
-
+    private static final int SYMTOMCO = 63;
+    private static final int DIAGNOTE = 64;
     private DbOpenHelper mOpenHelper;
     private static UriMatcher mUriMatcher;
 
@@ -150,6 +151,8 @@ public class CodeProvider extends ContentProvider {
         mUriMatcher.addURI(AUTHORITY, "clinic", CLINIC);
         mUriMatcher.addURI(AUTHORITY, "clinic/#", CLINIC_ITEM);
         mUriMatcher.addURI(AUTHORITY, "symtom", SYMTOM);
+        mUriMatcher.addURI(AUTHORITY, "symtomco", SYMTOMCO);
+        mUriMatcher.addURI(AUTHORITY, "diagnote", DIAGNOTE);
         mUriMatcher.addURI(AUTHORITY, "vitalsign", VITALSIGN);
         mUriMatcher.addURI(AUTHORITY, "hhsign", HH_SIGN);
         mUriMatcher.addURI(AUTHORITY, "hhservicecare", HH_SERVICECARE);
@@ -339,6 +342,14 @@ public class CodeProvider extends ContentProvider {
             case CodeProvider.SYMTOM:
                 builder.setTables(Symtom.TABLENAME);
                 builder.setProjectionMap(Symtom.PROJECTION_MAP);
+                break;
+            case CodeProvider.SYMTOMCO:
+                builder.setTables(SysSymtomco.TABLENAME);
+                builder.setProjectionMap(SysSymtomco.PROJECTION_MAP);
+                break;
+            case CodeProvider.DIAGNOTE:
+                builder.setTables(SysDiagnote.TABLENAME);
+                builder.setProjectionMap(SysDiagnote.PROJECTION_MAP);
                 break;
             case CodeProvider.VITALSIGN:
                 builder.setTables(VitalSign.TABLENAME);
@@ -923,6 +934,52 @@ public class CodeProvider extends ContentProvider {
             PROJECTION_MAP = new HashMap<String, String>();
             PROJECTION_MAP.put(Symtom._ID, "symtom AS " + Symtom._ID);
             PROJECTION_MAP.put(Symtom.NAME, "symtom AS " + Symtom.NAME);
+        }
+    }
+
+    public static class SysSymtomco implements BaseColumns {
+        public static final String TABLENAME = "syssymtomco";
+
+        public static final Uri CONTENT_URI = Uri.parse("content://"
+                + AUTHORITY + "/symtomco");
+
+        public static final String CONTENT_DIR_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+                + "/vnd.ffc.symtomco";
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+                + "/vnd.ffc.symtomco";
+
+        public static final String DEFAULT_SORTING = "symtomco";
+        public static final String NAME = "symtomco";
+
+        protected static final HashMap<String, String> PROJECTION_MAP;
+
+        static {
+            PROJECTION_MAP = new HashMap<String, String>();
+            PROJECTION_MAP.put(SysSymtomco._ID, "symtomco AS " + SysSymtomco._ID);
+            PROJECTION_MAP.put(SysSymtomco.NAME, "symtomco AS " + SysSymtomco.NAME);
+        }
+    }
+
+    public static class SysDiagnote implements BaseColumns {
+        public static final String TABLENAME = "sysdiagnote";
+
+        public static final Uri CONTENT_URI = Uri.parse("content://"
+                + AUTHORITY + "/diagnote");
+
+        public static final String CONTENT_DIR_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+                + "/vnd.ffc.diagnote";
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+                + "/vnd.ffc.diagnote";
+
+        public static final String DEFAULT_SORTING = "diagnote";
+        public static final String NAME = "diagnote";
+
+        protected static final HashMap<String, String> PROJECTION_MAP;
+
+        static {
+            PROJECTION_MAP = new HashMap<String, String>();
+            PROJECTION_MAP.put(SysDiagnote._ID, "diagnote AS " + SysDiagnote._ID);
+            PROJECTION_MAP.put(SysDiagnote.NAME, "diagnote AS " + SysDiagnote.NAME);
         }
     }
 

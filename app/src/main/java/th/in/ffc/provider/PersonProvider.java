@@ -34,6 +34,9 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.EditText;
+
+import th.in.ffc.R;
 import th.in.ffc.provider.CodeProvider.Diagnosis;
 import th.in.ffc.provider.HouseProvider.House;
 import th.in.ffc.provider.HouseProvider.Village;
@@ -1273,7 +1276,11 @@ public class PersonProvider extends ContentProvider {
         System.out.println(">> query table <<");
         System.out.println(builder.getTables());
         System.out.println(">> database <<");
-        System.out.println(db.toString());
+        System.out.println("db:"+db.toString());
+        System.out.println("projection:"+projection);
+        System.out.println("selection:"+selection );
+        System.out.println("selectionArgs:"+selectionArgs);
+        builder.setDistinct(true);
         Cursor c = builder.query(db, projection, selection, selectionArgs,
                 groupby, having, sortOrder);
         c.setNotificationUri(getContext().getContentResolver(), uri);
@@ -1499,6 +1506,10 @@ public class PersonProvider extends ContentProvider {
                 break;
             case VISIT_VISIT_LABSUGARBLOOD:
                 count = db.update(VISIT_VISITLABSUGARBLOOD.TABLENAME, values, selection,
+                        selectionArgs);
+                break;
+            case VISIT:
+                count = db.update(Visit.TABLENAME, values, selection,
                         selectionArgs);
                 break;
             default:
@@ -1945,6 +1956,11 @@ public class PersonProvider extends ContentProvider {
 
         public static final String BMI = "bmilevel";
         public static final String SYMPTOMS = "symptoms";
+        public static final String SYMPTOMSCO = "symptomsco";
+        public static final String DIAGNOTE = "diagnote";
+        public static final String VITALCHECK = "vitalcheck";
+        public static final String HEALTHSUGGEST1 = "healthsuggest1";
+
         public static final String VITAL = "vitalcheck";
         public static final String WEIGHT = "weight";
         public static final String HEIGHT = "height";
@@ -2001,6 +2017,11 @@ public class PersonProvider extends ContentProvider {
 
             PROJECTION_MAP.put(Visit.BMI, Visit.BMI);
             PROJECTION_MAP.put(Visit.SYMPTOMS, Visit.SYMPTOMS);
+            PROJECTION_MAP.put(Visit.SYMPTOMSCO, Visit.SYMPTOMSCO);
+            PROJECTION_MAP.put(Visit.VITALCHECK, Visit.VITALCHECK);
+            PROJECTION_MAP.put(Visit.DIAGNOTE, Visit.DIAGNOTE);
+            PROJECTION_MAP.put(Visit.HEALTHSUGGEST1, Visit.HEALTHSUGGEST1);
+
             PROJECTION_MAP.put(Visit.VITAL, Visit.VITAL);
             PROJECTION_MAP.put(Visit.WEIGHT, Visit.WEIGHT);
             PROJECTION_MAP.put(Visit.HEIGHT, Visit.HEIGHT);
@@ -2435,6 +2456,7 @@ public class PersonProvider extends ContentProvider {
         public static final String DATEAPPOINT = "dateappoint";
         public static final String USER = "user";
 
+
         protected static final HashMap<String, String> PROJECTION_MAP;
 
         static {
@@ -2454,7 +2476,6 @@ public class PersonProvider extends ContentProvider {
             PROJECTION_MAP.put(VisitIndividual.DATEAPPOINT,
                     VisitIndividual.DATEAPPOINT);
             PROJECTION_MAP.put(VisitIndividual.USER, VisitIndividual.USER);
-
         }
 
         public static Uri getContentUriId(long visitno, String drugcode) {
@@ -4173,6 +4194,7 @@ public class PersonProvider extends ContentProvider {
 
         static {
             PROJECTION_MAP = new HashMap<String, String>();
+            PROJECTION_MAP.put(" distinct "," distinct ");
             PROJECTION_MAP.put(Person.FIRST_NAME, FNAME + " AS " + Person.FIRST_NAME);
 
             PROJECTION_MAP.put(Person.LAST_NAME, LNAME + " AS " + Person.LAST_NAME);
@@ -4238,6 +4260,7 @@ public class PersonProvider extends ContentProvider {
 
         static {
             PROJECTION_MAP = new HashMap<String, String>();
+
             PROJECTION_MAP.put(Person.FIRST_NAME, FNAME + " AS " + Person.FIRST_NAME);
             PROJECTION_MAP.put(Person.LAST_NAME, LNAME + " AS " + Person.LAST_NAME);
             PROJECTION_MAP.put(Person.PID, PID + " AS " + Person.PID);

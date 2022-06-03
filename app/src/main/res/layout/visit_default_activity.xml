@@ -239,7 +239,10 @@
                     android:layout_height="wrap_content"
                     android:text="@string/celcius"/>
         </LinearLayout>
-
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDeviceBerryMed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:text="@string/device_berry"/>
         <TextView
                 style="@style/FFC.TextView.Title"
                 android:layout_width="match_parent"
@@ -262,6 +265,26 @@
                 android:hint="@string/symtom"/>
 
         <TextView
+            style="@style/FFC.TextView.Subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/symtomsco"/>
+
+<!--        <EditText-->
+<!--            android:id="@+id/symptomsco"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:ems="10"-->
+<!--            android:hint="@string/symtomsco"/>-->
+        <th.in.ffc.widget.InstantAutoComplete
+            android:id="@+id/symtomsco"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/symtomsco"/>
+
+        <TextView
                 style="@style/FFC.TextView.Subject"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -274,7 +297,25 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="@string/vitalcheck"/>
+        <TextView
+            style="@style/FFC.TextView.Subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/diagnote"/>
 
+<!--        <EditText-->
+<!--            android:id="@+id/diagnote"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:ems="10"-->
+<!--            android:hint="@string/diagnote"/>-->
+        <th.in.ffc.widget.InstantAutoComplete
+            android:id="@+id/diagnote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/diagnote"/>
         <TextView
                 style="@style/FFC.TextView.Subject"
                 android:layout_width="match_parent"
