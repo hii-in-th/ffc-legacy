@@ -361,7 +361,7 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
     private void delete_marker_button_Click() {
         if (edit) {
             Resources res = this.getResources();
-            Builder builder = new Builder(getActivity());
+            Builder builder = new Builder(getActivity(),android.R.style.Theme_Material_Light_Dialog_Alert);
             builder.setTitle(res
                     .getString(R.string.STRING_CONFIRM_DELETE_HOUSE_MARKER_TITLE));
             builder.setMessage(res
@@ -397,8 +397,10 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
                             }
                         }
                     });
+
             builder.setNegativeButton(R.string.cancel, null);
             builder.create().show();
+
         }
     }
 
@@ -677,7 +679,7 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
 
             if (location != null) {
                 Builder b = new Builder(
-                        this.getActivity());
+                        this.getActivity(),android.R.style.Theme_Material_Light_Dialog_Alert);
                 b.setTitle(res.getString(R.string.STRING_AUTO_GPS_TITLE));
                 b.setIcon(android.R.drawable.ic_input_add);
                 b.setCancelable(false);
@@ -726,16 +728,16 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
                         });
 //2. now setup to change color of the button
 
-                AlertDialog myDialog = b.create();
-                myDialog.show();
-                Button positiveButton = myDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                Button negativeButton = myDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-//                Button neutralButton = myDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-                positiveButton.setTextColor(Color.parseColor("#FFFFFFFF"));
-                positiveButton.setBackgroundColor(Color.parseColor("#FFB8B8B8"));
+                 b.create().show();
 
-                negativeButton.setTextColor(Color.parseColor("#FFFFFFFF"));
-                negativeButton.setBackgroundColor(Color.parseColor("#FFB8B8B8"));
+//                Button positiveButton = myDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+//                Button negativeButton = myDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+////                Button neutralButton = myDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+//                positiveButton.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                positiveButton.setBackgroundColor(Color.parseColor("#FFB8B8B8"));
+//
+//                negativeButton.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                negativeButton.setBackgroundColor(Color.parseColor("#FFB8B8B8"));
 
 //                neutralButton.setTextColor(Color.parseColor("#FF1B5AAC"));
 //                neutralButton.setBackgroundColor(Color.parseColor("#FFD9E9FF"));

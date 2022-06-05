@@ -149,8 +149,12 @@ public class PhotoTaker {
             switch (requestCode) {
                 case IMAGE_CAPTURE:
                     Log.e(TAG, "blayzupe IMAGE_CAPTURE");
+
                     final File tempFile = getFile(mDirectory, mTemp);
                     Log.d(TAG, "blayzupe tempfile=" + tempFile.getAbsolutePath());
+                    resizeImage(tempFile,mTemp);
+
+//                   File dir=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
 
                     // Create MediaUriScanner to find your Content URI of File
 //                    MediaUriFinder.create(mActivity, tempFile.getAbsolutePath(), mScanner);
@@ -162,9 +166,10 @@ public class PhotoTaker {
                         InputStream iStream = context.getContentResolver().openInputStream(dataUri);
                         byte[] inputData = getBytes(iStream);
                         final File tempFile2 = getFile(mDirectory, mTemp);
-                        OutputStream out = new FileOutputStream(tempFile2);
-                        out.write(inputData);
-                        out.close();
+                        OutputStream out2 = new FileOutputStream(tempFile2);
+                        out2.write(inputData);
+                        out2.close();
+                        resizeImage(tempFile2,mTemp);
                     }
                     catch (Exception e){
                         Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
@@ -216,7 +221,21 @@ public class PhotoTaker {
             Log.e(TAG, "blayzupe Result Not OK!!!");
         }
     }
-
+    private void resizeImage(File tempFile,String mTemp){
+        Bitmap b= BitmapFactory.decodeFile(tempFile.getAbsolutePath());
+        Bitmap out = Bitmap.createScaledBitmap(b, 250, 250, false);
+        String[] filename = mTemp.split("_");
+        File file = new File(mDirectory, filename[1]+".jpg");
+        FileOutputStream fOut;
+        try {
+            fOut = new FileOutputStream(file);
+            out.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            b.recycle();
+            out.recycle();
+        } catch (Exception e) {}
+    }
     private byte[] getBytes(InputStream inputStream) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         try {

@@ -279,7 +279,7 @@ public class PhotoTaker {
             intent.setType("image/*");
 
             // Use external Crop Intent if found
-            if (findCropActivity()) {
+//            if (findCropActivity()) {
                 Log.d(TAG, "blayzupe doPickImage() Found");
                 intent.putExtra("return-data", return_data);
 
@@ -287,19 +287,19 @@ public class PhotoTaker {
 
                 // Use Internal Crop method of GET_CONTENT intent
                 // This is more Risk method
-            } else {
-                Log.d(TAG, "blayzupe doPickImage() Not found crop activity");
-                intent.putExtra("crop", "true");
-                intent.putExtra("noFaceDetection", !faceDetection);
-                intent.putExtra("aspectX", aspectX);
-                intent.putExtra("aspectY", aspectY);
-                intent.putExtra("outputX", outputX);
-                intent.putExtra("outputY", outputY);
-                intent.putExtra("scale", scale);
-                intent.putExtra("return-data", return_data);
-
-                mActivity.startActivityForResult(intent, CROP_IMAGE);
-            }
+//            } else {
+//                Log.d(TAG, "blayzupe doPickImage() Not found crop activity");
+//                intent.putExtra("crop", "true");
+//                intent.putExtra("noFaceDetection", !faceDetection);
+//                intent.putExtra("aspectX", aspectX);
+//                intent.putExtra("aspectY", aspectY);
+//                intent.putExtra("outputX", outputX);
+//                intent.putExtra("outputY", outputY);
+//                intent.putExtra("scale", scale);
+//                intent.putExtra("return-data", return_data);
+//
+//                mActivity.startActivityForResult(intent, CROP_IMAGE);
+//            }
             return true;
         } catch (ActivityNotFoundException anfe) {
             anfe.printStackTrace();
@@ -314,7 +314,7 @@ public class PhotoTaker {
             public void onClick(DialogInterface dialog, int item) {
                 switch (item) {
                     case 0:
-                        doImageCapture();
+//                        doImageCapture();
                         askCameraPermission();
                         break; // Take from Camera
                     case 1:
@@ -355,7 +355,9 @@ public class PhotoTaker {
     public Uri getCameraTempFileUri() {
         if (camera_temp_file == null)
             return null;
-        return Uri.fromFile(camera_temp_file);
+        Uri uriTmp = FileProvider.getUriForFile(mActivity.getApplicationContext(), mActivity.getApplicationContext().getApplicationContext().getPackageName() + ".provider", camera_temp_file);
+        return uriTmp;
+        //return Uri.fromFile(camera_temp_file);
         //return FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".provider", camera_temp_file);
     }
 

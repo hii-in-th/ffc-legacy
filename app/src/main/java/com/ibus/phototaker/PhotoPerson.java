@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -110,7 +111,21 @@ public class PhotoPerson {
                     Log.e(TAG, "blayzupe IMAGE_CAPTURE");
                     final File tempFile = getFile(mDirectory, mTemp);
                     Log.d(TAG, "blayzupe tempfile=" + tempFile.getAbsolutePath());
-
+//
+////                    File dir=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+//                    Bitmap b= BitmapFactory.decodeFile(tempFile.getAbsolutePath());
+//                    Bitmap out = Bitmap.createScaledBitmap(b, 320, 480, false);
+//
+//                    File file = new File(mDirectory, "resize.png");
+//                    FileOutputStream fOut;
+//                    try {
+//                        fOut = new FileOutputStream(file);
+//                        out.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+//                        fOut.flush();
+//                        fOut.close();
+//                        b.recycle();
+//                        out.recycle();
+//                    } catch (Exception e) {}
                     // Create MediaUriScanner to find your Content URI of File
                     MediaUriFinder.create(mActivity, tempFile.getAbsolutePath(),
                             mScanner);

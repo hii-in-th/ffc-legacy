@@ -117,6 +117,8 @@ public class NCDRiskBall implements LoaderCallbacks<Cursor> {
                 if (!fillterVillNo.equals("")) {
                     where += " AND villno=" + fillterVillNo;
                 }
+                where +=" AND (person.pid|| person.pcucodeperson) NOT IN ( SELECT   persondeath.pid||persondeath.pcucodeperson  FROM persondeath )";
+
                 cl = new CursorLoader(context, queryBlackBall, projection, where, null, "birth");
                 break;
             case 1:
@@ -131,6 +133,8 @@ public class NCDRiskBall implements LoaderCallbacks<Cursor> {
                 if (!fillterVillNo.equals("")) {
                     where += " AND villno=" + fillterVillNo;
                 }
+                where +=" AND (person.pid|| person.pcucodeperson) NOT IN ( SELECT   persondeath.pid||persondeath.pcucodeperson  FROM persondeath )";
+
                 cl = new CursorLoader(context, queryRedBall, projection1, where, null, "birth");
                 break;
             case 2:
@@ -145,6 +149,8 @@ public class NCDRiskBall implements LoaderCallbacks<Cursor> {
                 if (!fillterVillNo.equals("")) {
                     where += " AND villno=" + fillterVillNo;
                 }
+                where +=" AND (person.pid|| person.pcucodeperson) NOT IN ( SELECT   persondeath.pid||persondeath.pcucodeperson  FROM persondeath )";
+
                 cl = new CursorLoader(context, queryRedBall, projection2, where, null, "birth");
                 break;
             case 3:
@@ -159,6 +165,8 @@ public class NCDRiskBall implements LoaderCallbacks<Cursor> {
                 if (!fillterVillNo.equals("")) {
                     where += " AND villno=" + fillterVillNo;
                 }
+                where +=" AND (person.pid|| person.pcucodeperson) NOT IN ( SELECT   persondeath.pid||persondeath.pcucodeperson  FROM persondeath )";
+
                 cl = new CursorLoader(context, queryRedBall, projection3, where, null, "birth");
                 break;
             case 4:
@@ -168,6 +176,8 @@ public class NCDRiskBall implements LoaderCallbacks<Cursor> {
                 if (!fillterVillNo.equals("")) {
                     where += " AND villno=" + fillterVillNo;
                 }
+                where +=" AND (person.pid|| person.pcucodeperson) NOT IN ( SELECT   persondeath.pid||persondeath.pcucodeperson  FROM persondeath )";
+
                 cl = new CursorLoader(context, queryNCDBall, projection4, where, null, "birth");
                 break;
             case 5:
@@ -182,6 +192,8 @@ public class NCDRiskBall implements LoaderCallbacks<Cursor> {
                 if (!fillterVillNo.equals("")) {
                     where += " AND villno=" + fillterVillNo;
                 }
+                where +=" AND (person.pid|| person.pcucodeperson) NOT IN ( SELECT   persondeath.pid||persondeath.pcucodeperson  FROM persondeath )";
+
                 cl = new CursorLoader(context, queryNCDBall, projection5, where, null, "birth");
                 break;
             case 6:
@@ -195,6 +207,8 @@ public class NCDRiskBall implements LoaderCallbacks<Cursor> {
                 if (!fillterVillNo.equals("")) {
                     where += " AND villno=" + fillterVillNo;
                 }
+                where +=" AND (person.pid|| person.pcucodeperson) NOT IN ( SELECT   persondeath.pid||persondeath.pcucodeperson  FROM persondeath )";
+
                 cl = new CursorLoader(context, queryNCDBall, projection6, where, null, "birth");
                 break;
             case 7:
@@ -207,6 +221,8 @@ public class NCDRiskBall implements LoaderCallbacks<Cursor> {
                 if (!fillterVillNo.equals("")) {
                     where += " AND villno=" + fillterVillNo;
                 }
+                where +=" AND (person.pid|| person.pcucodeperson) NOT IN ( SELECT   persondeath.pid||persondeath.pcucodeperson  FROM persondeath )";
+
                 cl = new CursorLoader(context, queryNCDBall, projection7, where, null, "birth");
                 break;
             case 999:
