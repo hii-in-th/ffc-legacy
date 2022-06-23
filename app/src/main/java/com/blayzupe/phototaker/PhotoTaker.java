@@ -225,6 +225,7 @@ public class PhotoTaker {
     private void resizeImage(File tempFile,String mTemp){
         Bitmap b= BitmapFactory.decodeFile(tempFile.getAbsolutePath());
         Bitmap out = Bitmap.createScaledBitmap(b, 250, 250, false);
+//        Bitmap out = Bitmap.createScaledBitmap(b, 250, (int) ((250*b.getHeight())/b.getWidth()), false);
         String[] filename = mTemp.split("_");
         File file = new File(mDirectory, filename[1].indexOf(".jpg")>-1?filename[1]:filename[1]+".jpg");
         FileOutputStream fOut;
