@@ -12,6 +12,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -225,7 +226,7 @@ public class PhotoTaker {
         Bitmap b= BitmapFactory.decodeFile(tempFile.getAbsolutePath());
         Bitmap out = Bitmap.createScaledBitmap(b, 250, 250, false);
         String[] filename = mTemp.split("_");
-        File file = new File(mDirectory, filename[1]+".jpg");
+        File file = new File(mDirectory, filename[1].indexOf(".jpg")>-1?filename[1]:filename[1]+".jpg");
         FileOutputStream fOut;
         try {
             fOut = new FileOutputStream(file);
