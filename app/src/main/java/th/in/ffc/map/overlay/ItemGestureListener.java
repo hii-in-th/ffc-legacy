@@ -30,6 +30,8 @@ public class ItemGestureListener implements
         mapView = (MapView) mf.getView().findViewById(R.id.mapview);
     }
 
+
+
     //TODO Change to Google Map
 /*    @Override
     public boolean onItemDoubleTap(int arg0, Spot spot) {
@@ -69,7 +71,9 @@ public class ItemGestureListener implements
         return true;
     }*/
 
-    @Override public boolean onItemSingleTapUp(int i, Spot spot) {
+
+    @Override
+    public boolean onItemSingleTapUp(int i, Spot spot) {
         if (spot.getUid().equals(MARKER_TYPE.HOUSE.name()))
             FGActivity.fgsys.getFGActivity()
                     .startFamilyTree(spot.getPartialID());

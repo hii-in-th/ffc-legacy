@@ -395,12 +395,12 @@ public class VisitDefaultActivity extends VisitActivity implements
                 if (tmp.trim().indexOf("-") < 0) {
                     mTemp.setText(tmp);
                 }
-                if (hight.indexOf("-") < 0) {
-                    mPressure.setText(hight);
+                if (hight.indexOf("-") < 0 && low.indexOf("-")<0) {
+                    mPressure.setText(hight+"/"+low);
                 }
-                if (low.indexOf("-") < 0) {
-                    mPressure2.setText(low);
-                }
+//                if (low.indexOf("-") < 0) {
+//                    mPressure2.setText(low);
+//                }
 //                if(spO2PluseRate.indexOf("-")<0) {
 //
 //                    mPulse.setText(spO2PluseRate);

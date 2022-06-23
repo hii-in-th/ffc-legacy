@@ -74,7 +74,9 @@ public class FGDatabaseManager {
 
                 "(SELECT person.hcode, COUNT(persontype.pid) AS bfield " + " FROM person " + " LEFT JOIN persontype ON person.pid = persontype.pid " + " GROUP BY person.hcode) AS btable " +
 
-                "WHERE village.villcode = house.villcode " + "AND house.hcode = atable.hcode " + "AND house.hcode = btable.hcode " + "ORDER BY CAST(house.hno AS INTEGER), length(hno), hno ";
+                "WHERE village.villcode = house.villcode " + "AND house.hcode = atable.hcode " + "AND house.hcode = btable.hcode " +
+//                "ORDER BY CAST(house.hno AS INTEGER), length(hno), hno ";
+                "order by  villname,house.hno";
 
         Cursor cursor = this.databaseManager.getCursor(stringSQL);
         if (cursor.moveToFirst()) {

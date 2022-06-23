@@ -48,6 +48,10 @@ import th.in.ffc.map.value.MARKER_TYPE;
 import th.in.ffc.map.village.spot.Spot;
 
 import java.io.File;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
@@ -242,10 +246,11 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
             @Override
             public void run() {
                 LinkedHashSet<SpinnerItem> temp = new LinkedHashSet<SpinnerItem>();
-
+                LinkedHashSet<SpinnerItem> tempSorted = new LinkedHashSet<SpinnerItem>();
                 FGDatabaseManager db = FGActivity.fgsys.getFGDatabaseManager();
                 Iterator<Spot> item = db.getAvailable().values().iterator();
                 int i = 0;
+                LinkedHashSet<String> set = new LinkedHashSet<>();
                 while (item.hasNext()) {
                     Spot current = item.next();
                     if (current.getUid().equals(type.name())) {
@@ -253,12 +258,25 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
                         SpinnerItem tmp = new SpinnerItem(
                                 current.getRepresentativeString(type
                                         .getSpinnerText()), current.getID());
-
                         tmp.setInt(i++);
                         temp.add(tmp);
+                        set.add(tmp.getName());
                     }
                 }
 
+                ArrayList<String> data = new ArrayList<>(set);
+                Collections.sort(data);
+                for(int j =0 ;j<data.size();j++){
+                    Iterator<SpinnerItem> it = temp.iterator();
+                    while (it.hasNext()){
+                        SpinnerItem spinnerItem = it.next();
+                        if(data.get(j) == spinnerItem.getName()){
+                            spinnerItem.setInt(j);
+                            tempSorted.add(spinnerItem);
+                            break;
+                        }
+                    }
+                }
                 Log.d("TAG!", " size is " + temp.size());
 
                 if (temp.size() == 0) {
@@ -270,12 +288,17 @@ public class CreateBaseFragment extends FFCFragment implements OnClickListener,
                     handler.sendEmptyMessage(2);
                 }
 
-                CreateBaseFragment.this.items = temp
-                        .toArray(new SpinnerItem[temp.size()]);
+//                CreateBaseFragment.this.items = temp
+//                        .toArray(new SpinnerItem[temp.size()]);
+                CreateBaseFragment.this.items = tempSorted
+                        .toArray(new SpinnerItem[tempSorted.size()]);
 
                 item = null;
                 temp.clear();
                 temp = null;
+
+                tempSorted.clear();
+                tempSorted = null;
                 handler.sendEmptyMessage(0);
             }
         };

@@ -16,6 +16,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import androidx.appcompat.app.ActionBar;
@@ -48,13 +49,16 @@ import org.osmdroid.util.GeoPoint;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Observable;
 
 import th.in.ffc.FamilyFolderCollector;
 import th.in.ffc.R;
 import th.in.ffc.app.FFCFragmentActivity;
 import th.in.ffc.intent.Action;
 import th.in.ffc.intent.Category;
+import th.in.ffc.map.database.DatabaseManager;
 import th.in.ffc.map.map.FGMapManager;
 import th.in.ffc.map.preference.PreferenceFilter;
 import th.in.ffc.map.service.GeneralAsyncTask;
@@ -62,6 +66,7 @@ import th.in.ffc.map.service.ProcessingFilterAsyncTask;
 import th.in.ffc.map.system.FGSystemManager;
 import th.in.ffc.map.value.FinalValue;
 import th.in.ffc.map.value.MARKER_TYPE;
+import th.in.ffc.map.village.spot.Spot;
 import th.in.ffc.person.genogram.V1.Family;
 import th.in.ffc.person.genogram.V1.FamilyTree;
 import th.in.ffc.provider.HouseProvider.House;
@@ -89,7 +94,10 @@ public class FGActivity extends FFCFragmentActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     public static boolean filter_enabled = false;
     private boolean firsttime = true;
+    String hcode;
     MapView mapView;
+//    Spot item;
+    public Spot item ;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -105,8 +113,53 @@ public class FGActivity extends FFCFragmentActivity {
         TEMP_PATH = DATA_PATH + "temps/";
 //        this.setContentView(R.layout.main_maps_activity);
         this.setContentView(R.layout.main_maps_activity);
+        Intent intent = getIntent();
+        hcode = intent.getStringExtra("hcode");
         loadMap();
-        getCurrentLocation();
+        if(hcode != null) {
+            goToHouse(hcode);
+        } else {
+            getCurrentLocation();
+        }
+    }
+    private void searchHelper(final String query) {
+        if(hcode!=null) {
+            DatabaseManager db = fgsys.getFGDatabaseManager().getDatabaseManager();
+//            Spot item = null;
+            if (db.openDatabase()) {
+                Cursor cur = db
+                        .getCursor("SELECT distinct h.hno FROM person p,house h WHERE p.hcode=h.hcode and (h.xgis is not null and not h.xgis = '0.0' and not h.xgis = '0' and not h.xgis = ' ' and not h.xgis = '  ' and not h.xgis = '') and (h.ygis is not null and not h.ygis = '0.0' and not h.ygis = '0' and not h.ygis = ' ' and not h.ygis = '  ' and not h.ygis = '') and "
+                                + query);
+
+                if (cur.moveToFirst()) {
+                    String hno = cur.getString(0);
+                    item = normalSearch(hno);
+                }
+                cur.close();
+                cur = null;
+                db.closeDatabase();
+
+            } else {
+                Message msg = new Message();
+                msg.what = FGActivity.FAILED;
+                msg.obj = "Database cannot be opened. Please try again.";
+                handler.sendMessage(msg);
+            }
+        }
+    }
+    private Spot normalSearch(String str) {
+        // ItemizedIconOverlay<Spot> marker = fgSystemManager
+        // .getFGOverlayManager().getMarker();
+        Collection<Spot> marked = this.fgsys.getFGDatabaseManager().getMarked().values();
+        String house_codename = MARKER_TYPE.HOUSE.name();
+
+        for (Spot spot : marked) {
+            if (spot.getUid().equals(house_codename) && spot.getBundle().getString("HNo").equals(str)) {
+                return spot;
+            }
+        }
+
+        return null;
     }
     private void loadMap(){
         ActionBar ab = getSupportActionBar();
@@ -207,7 +260,7 @@ public class FGActivity extends FFCFragmentActivity {
                         IMapController controller = mapView.getController();
                         controller.animateTo(mLocation.getMyLocation());
                     }
-                }, 8000);
+                }, 3000);
 
     }
     private void requestPermissionsIfNecessary(String[] permissions) {
@@ -237,6 +290,26 @@ public class FGActivity extends FFCFragmentActivity {
     protected void onStart() {
         super.onStart();
         LoadStart();
+
+    }
+    private void setCenterHome(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(item != null){
+                    {
+                        if(item.getPoint().getLatitude() != 0 && item.getPoint().getLongitude() !=0){
+                            fgsys.getFGMapManager().getMapController().setCenter(item.getPoint());
+                        }
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"ไม่พบตำแหน่งบ้าน hcode:"+hcode+" โปรแกรมจะมายังตำแหน่งปัจจุบัน",Toast.LENGTH_LONG).show();
+                    getCurrentLocation();
+                }
+            }
+        }, 3000);
+
     }
     private void LoadStart(){
         SharedPreferences prefsFamilyTree = getSharedPreferences(
@@ -256,17 +329,21 @@ public class FGActivity extends FFCFragmentActivity {
                 public void run() {
                     fgsys = new FGSystemManager(FGActivity.this);
                     Log.d("TAG!", "Completed This Thread!");
-
+                    searchHelper("p.hcode="+hcode);
                 }
             };
             new GeneralAsyncTask(this, null, handler, INITIALIZE, FAILED)
                     .execute(r, null);
+//            if(item==null){
+//                getCurrentLocation();
+//            }
         } else if (!fgsys.getFGActivity().equals(this)) {
             Log.i("TAG!", "Not equal!");
             Runnable r = new Runnable() {
                 @Override
                 public void run() {
                     fgsys.setFGActivity(FGActivity.this);
+
                 }
             };
             new GeneralAsyncTask(this, null, handler, INITIALIZE, FAILED)
@@ -481,16 +558,24 @@ public class FGActivity extends FFCFragmentActivity {
         String selection = "hcode=?";
         Cursor c = getContentResolver().query(House.CONTENT_URI, projection, selection,
             new String[]{hcode}, House._ID);
-        if (c.moveToFirst()) {
-            double x = c.getDouble(1);
-            double y = c.getDouble(2);
-            if (x > 0 || y > 0) {
-                Toast.makeText(this, "x=" + x + " y=" + y, Toast.LENGTH_SHORT).show();
-                GeoPoint geo = new GeoPoint(y, x);
-                fgsys.getFGMapManager().getMapController()
-                    .setCenter(geo);
+        if(c.getCount()>0) {
+            if (c.moveToFirst()) {
+                double x = c.getDouble(1);
+                double y = c.getDouble(2);
+                if (x > 0 || y > 0) {
+//                    Toast.makeText(this, "x=" + x + " y=" + y, Toast.LENGTH_SHORT).show();
+                    GeoPoint geo = new GeoPoint(y, x);
+                    mapView.getController().setCenter(geo);
+                }
+                else {
+                    Toast.makeText(this, "ไม่พบตำแหน่งของบ้าน hcode:"+hcode+" โปรแกรมจะไปยังตำแหน่งปัจจุบัน", Toast.LENGTH_SHORT).show();
+                    getCurrentLocation();
+                }
             }
-
+        }
+        else {
+            Toast.makeText(this, "ไม่พบตำแหน่งของบ้าน hcode:"+hcode+" โปรแกรมจะไปยังตำแหน่งปัจจุบัน", Toast.LENGTH_SHORT).show();
+            getCurrentLocation();
         }
     }
 

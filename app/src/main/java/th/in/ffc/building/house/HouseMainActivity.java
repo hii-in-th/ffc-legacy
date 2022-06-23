@@ -31,6 +31,7 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +46,11 @@ import th.in.ffc.R;
 import th.in.ffc.app.FFCTabsPagerActivity;
 import th.in.ffc.intent.Action;
 import th.in.ffc.intent.Category;
+import th.in.ffc.map.FGActivity;
+import th.in.ffc.map.database.DatabaseManager;
+import th.in.ffc.map.system.FGSystemManager;
+import th.in.ffc.map.value.MARKER_TYPE;
+import th.in.ffc.map.village.spot.Spot;
 import th.in.ffc.person.PersonFragment;
 import th.in.ffc.person.PersonListFragment;
 import th.in.ffc.provider.HouseProvider.House;
@@ -52,6 +58,8 @@ import th.in.ffc.provider.HouseProvider.Village;
 import th.in.ffc.provider.PersonProvider.Person;
 
 import java.io.*;
+import java.util.Collection;
+
 import th.in.ffc.security.LoginActivity;
 
 /**
@@ -67,7 +75,6 @@ public class HouseMainActivity extends FFCTabsPagerActivity {
     ImageView mImage;
     String mPhotoPath;
     String mPhotoThrumb;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -144,7 +151,6 @@ public class HouseMainActivity extends FFCTabsPagerActivity {
 
             TextView code = (TextView) findViewById(R.id.code);
             code.setText(getString(R.string.shape).concat(c1.getString(0)));
-
             String hno = c1.getString(1);
             if (hno.matches("\\d.*"))
                 hno = getString(R.string.houseNo) + " " + hno;
@@ -162,7 +168,6 @@ public class HouseMainActivity extends FFCTabsPagerActivity {
             }
         }
     }
-
     boolean mGenogramable = true;
 
     @Override

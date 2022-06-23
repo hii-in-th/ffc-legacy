@@ -72,7 +72,7 @@ public class DialogSearchHouseMarker extends Dialog implements View.OnClickListe
         Spot item = null;
         if (db.openDatabase()) {
             Cursor cur = db
-                    .getCursor("SELECT distinct h.hno FROM person p,house h WHERE p.hcode=h.hcode and (h.xgis is not null and not h.xgis = '0.0' and not h.xgis = '0' and not h.xgis = ' ' and not h.xgis = '  ' and not h.xgis = '') and (h.ygis is not null and not h.ygis = '0.0' and not h.ygis = '0' and not h.ygis = ' ' and not h.ygis = '  ' and not h.ygis = '') and "
+                    .getCursor("SELECT distinct h.hno,h.hcodee FROM person p,house h WHERE p.hcode=h.hcode and (h.xgis is not null and not h.xgis = '0.0' and not h.xgis = '0' and not h.xgis = ' ' and not h.xgis = '  ' and not h.xgis = '') and (h.ygis is not null and not h.ygis = '0.0' and not h.ygis = '0' and not h.ygis = ' ' and not h.ygis = '  ' and not h.ygis = '') and "
                             + query);
 
             if (cur.moveToFirst()) {

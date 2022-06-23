@@ -75,7 +75,8 @@ public class WaveformView extends SurfaceView implements SurfaceHolder.Callback{
         mWavePaint.setStrokeCap(Paint.Cap.ROUND);
         mWavePaint.setStrokeJoin(Paint.Join.ROUND);
 
-        int backgroundColor = arr.getColor(R.styleable.WaveformView_backgroundColor, Color.rgb(70,189,147));
+//        int backgroundColor = arr.getColor(R.styleable.WaveformView_backgroundColor, Color.rgb(70,189,147));
+        int backgroundColor = arr.getColor(R.styleable.WaveformView_backgroundColor, Color.rgb(141,141,141));
         mBackgroundPaint = new Paint();
         mBackgroundPaint.setColor(backgroundColor);
         //mBackgroundPaint.setColor(R.color.red_50);
