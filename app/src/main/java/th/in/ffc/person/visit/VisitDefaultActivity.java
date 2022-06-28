@@ -46,6 +46,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.berry_med.monitordemo.activity.DeviceMainActivity;
 
@@ -90,7 +91,8 @@ public class VisitDefaultActivity extends VisitActivity implements
     private static final int LOAD_VITALCHECK = 4;
     private static final int LOAD_HEALTSUGGEST = 5;
     private static final int LOAD_SAVED_VISIT = 6;
-    private static final int DEVICE_RESULT = 1;
+    private static final int DEVICE_RESULT_ONE = 1;
+    private static final int DEVICE_RESULT_TWO = 2;
 
     private static final int LOAD_SYMTOMCO = 7;
     private static final int LOAD_DIAGNOTE= 8;
@@ -111,6 +113,8 @@ public class VisitDefaultActivity extends VisitActivity implements
     private EditText mPulse;
     private EditText mTemp;
     private Button mBtnDeviceBerryMed;
+    private ImageButton mBtnDevice1;
+    private ImageButton mBtnDevice2;
 
     private String mTimeStart;
 
@@ -326,12 +330,20 @@ public class VisitDefaultActivity extends VisitActivity implements
         mPressure2 = (EditText) findViewById(R.id.pressure2);
         mPulse = (EditText) findViewById(R.id.pulse);
         mTemp = (EditText) findViewById(R.id.temperature);
-        mBtnDeviceBerryMed = (Button) findViewById(R.id.btnDeviceBerryMed);
-        mBtnDeviceBerryMed.setOnClickListener(new View.OnClickListener() {
+        mBtnDevice1 = (ImageButton) findViewById(R.id.btnDevice1);
+        mBtnDevice1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), DeviceMainActivity.class);
-                startActivityForResult(intent,DEVICE_RESULT);
+                startActivityForResult(intent,DEVICE_RESULT_ONE);
+            }
+        });
+        mBtnDevice2 = (ImageButton) findViewById(R.id.btnDevice2);
+        mBtnDevice2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), DeviceMainActivity.class);
+                startActivityForResult(intent,DEVICE_RESULT_TWO);
             }
         });
         if (c != null) {
@@ -368,7 +380,7 @@ public class VisitDefaultActivity extends VisitActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
-            if(requestCode == DEVICE_RESULT) {
+            if(requestCode == DEVICE_RESULT_ONE || requestCode == DEVICE_RESULT_TWO) {
                 String ecgInfo = data.getStringExtra("ECGInfo");
                 String spO2Info = data.getStringExtra("SPO2Info");
 
@@ -389,24 +401,24 @@ public class VisitDefaultActivity extends VisitActivity implements
                 int indexHigh = nibpInfo.indexOf(strHigh);
                 int indexLow = nibpInfo.indexOf(strLow);
                 int indexMean = nibpInfo.indexOf(strMean);
-                String hight = nibpInfo.substring(indexHigh+strHigh.length(),indexLow-1);
-                String low = nibpInfo.substring(indexLow+strLow.length(),indexMean-1);
+                String hight = nibpInfo.substring(indexHigh + strHigh.length(), indexLow - 1);
+                String low = nibpInfo.substring(indexLow + strLow.length(), indexMean - 1);
                 String tmp = tempInfo.replace("TEMP:", "").replace("°C", "").trim();
                 if (tmp.trim().indexOf("-") < 0) {
                     mTemp.setText(tmp);
                 }
-                if (hight.indexOf("-") < 0 && low.indexOf("-")<0) {
-                    mPressure.setText(hight+"/"+low);
-                }
-//                if (low.indexOf("-") < 0) {
-//                    mPressure2.setText(low);
-//                }
-//                if(spO2PluseRate.indexOf("-")<0) {
-//
-//                    mPulse.setText(spO2PluseRate);
-//                }
                 if (RespRate.indexOf("-") < 0) {
                     mPulse.setText(RespRate);
+                }
+                if (requestCode == DEVICE_RESULT_ONE) {
+                    if (hight.indexOf("-") < 0 && low.indexOf("-") < 0) {
+                        mPressure.setText(hight + "/" + low);
+                    }
+                }
+                if (requestCode == DEVICE_RESULT_TWO) {
+                    if (hight.indexOf("-") < 0 && low.indexOf("-") < 0) {
+                        mPressure2.setText(hight + "/" + low);
+                    }
                 }
             }
         }

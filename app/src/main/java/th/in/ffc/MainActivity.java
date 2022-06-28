@@ -31,6 +31,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.os.Build.VERSION.SDK_INT;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.*;
 import android.content.pm.PackageManager;
@@ -47,13 +48,27 @@ import androidx.fragment.app.FragmentTransaction;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import th.in.ffc.app.FFCFragmentActivity;
 import th.in.ffc.app.FFCGridActivity;
 import th.in.ffc.intent.Action;
 import th.in.ffc.intent.Category;
 import th.in.ffc.security.CryptographerService;
+import th.in.ffc.security.PdpaActivity;
 import th.in.ffc.util.AssetReader;
+import th.in.ffc.util.DateTime;
 import th.in.ffc.widget.IntentBaseAdapter;
 
 /**
@@ -65,6 +80,7 @@ import th.in.ffc.widget.IntentBaseAdapter;
  */
 public class MainActivity extends FFCGridActivity {
 
+    Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -103,9 +119,70 @@ public class MainActivity extends FFCGridActivity {
         } else {
             super.doCheckDateSetting();
         }
+        showDialogPDPA();
     }
 
+    private void showDialogPDPA(){
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
 
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        String formattedDate = df.format(c);
+
+        SharedPreferences prefer = getSharedPreferences("MainActivity", Context.MODE_PRIVATE);
+
+        if(!prefer.getString("PDPA","").equals(formattedDate)) {
+
+            SharedPreferences.Editor editor = prefer.edit();
+            editor.putString("PDPA", formattedDate);
+            editor.commit();
+            SharedPreferences prefer2 = getSharedPreferences("MainActivity", Context.MODE_PRIVATE);
+
+            dialog = new Dialog(this);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setTitle("ข้อตกลงการใช้บริการ");
+            dialog.setCancelable(true);
+            dialog.setContentView(R.layout.activity_pdpa);
+            dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            final CheckBox chkAllow = dialog.findViewById(R.id.chkAllow);
+            final Button btnOK = dialog.findViewById(R.id.btnOK);
+            final Button btnCancel = dialog.findViewById(R.id.btnCancel);
+            final TextView tvpdpa = dialog.findViewById(R.id.tvPdpa);
+            tvpdpa.setMovementMethod(new ScrollingMovementMethod());
+
+            btnOK.setEnabled(false);
+            chkAllow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    btnOK.setEnabled(b);
+                }
+            });
+            btnOK.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finishAffinity();
+                    System.exit(0);
+                }
+            });
+            dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
+                    if (i == KeyEvent.KEYCODE_BACK) {
+                        finishAffinity();
+                        System.exit(0);
+                    }
+                    return true;
+                }
+            });
+            dialog.show();
+        }
+    }
     private boolean mRegis = false;
 
     @Override
@@ -192,6 +269,11 @@ public class MainActivity extends FFCGridActivity {
 
                         registerReceiver(mEncrypterReceiver, mEncryptFilter);
                         mRegis = true;
+
+                        SharedPreferences prefer = getSharedPreferences("MainActivity", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefer.edit();
+                        editor.putString("PDPA", "");
+                        editor.commit();
 
                         Intent service = new Intent(MainActivity.this, CryptographerService.class);
                         service.setAction(Action.ENCRYPT);

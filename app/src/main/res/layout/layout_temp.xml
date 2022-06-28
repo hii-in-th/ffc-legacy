@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/overlay_black"
         android:gravity="center"
-        android:text="TEMP:--.- "
+        android:text="TEMP:36.5 "
         />
 
 </LinearLayout>

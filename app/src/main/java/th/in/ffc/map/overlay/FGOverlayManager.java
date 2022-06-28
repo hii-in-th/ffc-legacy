@@ -229,11 +229,12 @@ public class FGOverlayManager {
 
         Bitmap bitmap = Bitmap.createBitmap(bitmapDrawable.getBitmap().copy(
                 Bitmap.Config.ARGB_8888, true));
-        int mul= 2;
-        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()*mul, bitmap.getHeight()*mul, false);
+        double mul= 1.3;
+        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth()*mul), (int)(bitmap.getHeight()*mul), false);
+//        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), false);
         Canvas canvas = new Canvas(bitmap2);
 
-        float default_width = 25f;
+        float default_width = 5f;
 
         final float densityMultiplier = context.getResources()
                 .getDisplayMetrics().density;
@@ -243,7 +244,7 @@ public class FGOverlayManager {
         paint.setColor(textColor);
         paint.setAntiAlias(true);
         paint.setTextAlign(Align.CENTER);
-        paint.setTextSize(size);
+        paint.setTextSize((int)(size));
 
         final float center_x = (canvas.getWidth()) / 2;
         final float center_y = ((canvas.getHeight()) / 2) + 5;
@@ -256,9 +257,9 @@ public class FGOverlayManager {
             else
                 img_width -= 30;
 
-            while (paint.measureText(text) > img_width && default_width > 0) {
-                paint.setTextSize(--default_width * densityMultiplier);
-            }
+//            while (paint.measureText(text) > img_width && default_width > 0) {
+//                paint.setTextSize(--default_width * densityMultiplier);
+//            }
 
             canvas.drawText(text, center_x, center_y, paint);
         }
@@ -278,8 +279,9 @@ public class FGOverlayManager {
         Bitmap bitmap = Bitmap.createBitmap(bitmapDrawable.getBitmap().copy(
                 Bitmap.Config.ARGB_8888, false));
 
-        int mul= 2;
-        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()*mul, bitmap.getHeight()*mul, false);
+        double mul= 1.3;
+        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth()*mul), (int)(bitmap.getHeight()*mul), false);
+//        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), false);
         bitmapDrawable = new BitmapDrawable(bitmap2);
         bitmapDrawable.setBounds(0,0, bitmapDrawable.getIntrinsicWidth(), bitmapDrawable.getIntrinsicHeight());
 //		bitmapDrawable.setBounds(0, 0, bitmapDrawable.getIntrinsicWidth(),

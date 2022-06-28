@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/overlay_black"
         android:gravity="center"
-        android:text="Heart Rate:--  Resp Rate:-- "
+        android:text="Heart Rate:75  Resp Rate:80 "
         />
 
     <com.berry_med.monitordemo.view.WaveformView

@@ -36,6 +36,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -143,6 +144,10 @@ public class LoginActivity extends FFCFragmentActivity implements
                 Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.INTERNET
         });
+        SharedPreferences prefer = getSharedPreferences("MainActivity", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefer.edit();
+        editor.putString("PDPA", "");
+        editor.commit();
     }
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
