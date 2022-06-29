@@ -229,7 +229,7 @@ public class FGOverlayManager {
 
         Bitmap bitmap = Bitmap.createBitmap(bitmapDrawable.getBitmap().copy(
                 Bitmap.Config.ARGB_8888, true));
-        double mul= 1.3;
+        double mul= 2;
         Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth()*mul), (int)(bitmap.getHeight()*mul), false);
 //        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), false);
         Canvas canvas = new Canvas(bitmap2);
@@ -279,7 +279,7 @@ public class FGOverlayManager {
         Bitmap bitmap = Bitmap.createBitmap(bitmapDrawable.getBitmap().copy(
                 Bitmap.Config.ARGB_8888, false));
 
-        double mul= 1.3;
+        double mul= 2;
         Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth()*mul), (int)(bitmap.getHeight()*mul), false);
 //        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), false);
         bitmapDrawable = new BitmapDrawable(bitmap2);
