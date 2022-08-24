@@ -801,8 +801,8 @@
     <string name="village_post">รหัสไปรษณีย์</string>
     <string name="village_cub">หลัก</string>
     <string name="location">สถานที่</string>
-    <string name="latitude">ละติจูด (ygis)</string>
-    <string name="longitude">ลองติจูด (xgis)</string>
+    <string name="latitude">ละติจูด (xgis)</string>
+    <string name="longitude">ลองติจูด (ygis)</string>
     <string name="try_again">หมายเลขลำดับที่ซ้ำ โปรดใส่อีกครั้ง</string>
     <string name="delete_marker">ลบตำแหน่ง</string>
     <string name="todo">TODO</string>

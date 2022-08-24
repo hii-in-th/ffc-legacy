@@ -310,8 +310,10 @@ public class Map506FragmentActivity extends FFCFragmentActivity implements Loade
                 if (c.moveToFirst()) {
                     do {
                         String hcode = c.getString(c.getColumnIndex("hcode"));
-                        String slat = c.getString(c.getColumnIndex("ygis"));
-                        String slng = c.getString(c.getColumnIndex("xgis"));
+                        String slat = c.getString(c.getColumnIndex("xgis"));
+                        String slng = c.getString(c.getColumnIndex("ygis"));
+//                        String slat = c.getString(c.getColumnIndex("ygis"));
+//                        String slng = c.getString(c.getColumnIndex("xgis"));
                         String hno = c.getString(c.getColumnIndex("hno"));
                         if (!TextUtils.isEmpty(slat) && !TextUtils.isEmpty(slng)) {
                             Double lat = Double.parseDouble(slat);
@@ -357,8 +359,10 @@ public class Map506FragmentActivity extends FFCFragmentActivity implements Loade
         if (!TextUtils.isEmpty(c.getString(c.getColumnIndex("xgis"))) && !TextUtils.isEmpty(
                 c.getString(c.getColumnIndex("ygis")))) {
             if (isNumeric(c.getString(c.getColumnIndex("xgis"))) && isNumeric(c.getString(c.getColumnIndex("ygis")))) {
-                Double lat = Double.parseDouble(c.getString(c.getColumnIndex("ygis")));
-                Double lng = Double.parseDouble(c.getString(c.getColumnIndex("xgis")));
+//                Double lat = Double.parseDouble(c.getString(c.getColumnIndex("ygis")));
+//                Double lng = Double.parseDouble(c.getString(c.getColumnIndex("xgis")));
+                Double lat = Double.parseDouble(c.getString(c.getColumnIndex("xgis")));
+                Double lng = Double.parseDouble(c.getString(c.getColumnIndex("ygis")));
                 String hno = c.getString(c.getColumnIndex("hno"));
                 String diseasenamethai = c.getString(c.getColumnIndex("diseasenamethai"));
                 String sickdatestart = c.getString(c.getColumnIndex("sickdatestart"));

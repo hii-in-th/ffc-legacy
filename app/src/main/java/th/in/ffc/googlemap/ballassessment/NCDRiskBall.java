@@ -375,8 +375,10 @@ public class NCDRiskBall implements LoaderCallbacks<Cursor> {
         pid.add(checkNull(c.getString(c.getColumnIndex("pid"))));
         pcucode.add(checkNull(c.getString(c.getColumnIndex("pcucodeperson"))));
         age.add(getAge(c.getString(c.getColumnIndex("birth"))));
-        String lat = c.getString(c.getColumnIndex("ygis"));
-        String lng = c.getString(c.getColumnIndex("xgis"));
+//        String lat = c.getString(c.getColumnIndex("ygis"));
+//        String lng = c.getString(c.getColumnIndex("xgis"));
+        String lat = c.getString(c.getColumnIndex("xgis"));
+        String lng = c.getString(c.getColumnIndex("ygis"));
         HashVillno.put(c.getString(c.getColumnIndex("villname")), c.getString(c.getColumnIndex("villno")));
         if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lng)) {
             if (checkDoubletype(lat) && checkDoubletype(lng)) {

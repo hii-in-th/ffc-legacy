@@ -281,8 +281,10 @@ public class VisitDiagActivity extends VisitActivity implements
             Cursor c = contentResolver.query(uri, projection, selection, selectionArgs, "visit.visitno");
             if (c.moveToFirst()) {
                 pcucodeperson = c.getString(c.getColumnIndex("pcucodeperson"));
-                lat = c.getString(c.getColumnIndex("ygis"));
-                lng = c.getString(c.getColumnIndex("xgis"));
+//                lat = c.getString(c.getColumnIndex("ygis"));
+//                lng = c.getString(c.getColumnIndex("xgis"));
+                lat = c.getString(c.getColumnIndex("xgis"));
+                lng = c.getString(c.getColumnIndex("ygis"));
                 pid = c.getString(c.getColumnIndex("pid"));
                 if (TextUtils.isEmpty(lng) && TextUtils.isEmpty(lat)) {
                     insertRadiusDetail();
@@ -325,8 +327,10 @@ public class VisitDiagActivity extends VisitActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (viewHouse) {
-                    Double tempLat = Double.parseDouble(c.getString(c.getColumnIndex("ygis")));
-                    Double tempLng = Double.parseDouble(c.getString(c.getColumnIndex("xgis")));
+//                    Double tempLat = Double.parseDouble(c.getString(c.getColumnIndex("ygis")));
+//                    Double tempLng = Double.parseDouble(c.getString(c.getColumnIndex("xgis")));
+                    Double tempLat = Double.parseDouble(c.getString(c.getColumnIndex("xgis")));
+                    Double tempLng = Double.parseDouble(c.getString(c.getColumnIndex("ygis")));
                     Intent a = new Intent(Action.VIEW);
                     a.addCategory(Category.MAP506);
                     a.putExtra("hcode", c.getString(c.getColumnIndex("hcode")));

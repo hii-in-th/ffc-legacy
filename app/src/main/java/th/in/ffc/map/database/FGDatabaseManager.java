@@ -118,14 +118,21 @@ public class FGDatabaseManager {
 
                 if (!this.isPointExist(stringXgis, stringYgis)) {
 
-                    Spot house = new Spot(pcucode, type, stringVillCode, intHCode, doubleYgis, doubleXgis, addition);
+                    Spot house = new Spot(pcucode, type, stringVillCode, intHCode, doubleXgis, doubleYgis, addition);
                     this.available.put(type + "_" + house.getID(), house);
                 } else {
-                    doubleXgis = Double.parseDouble(stringXgis);
-                    doubleYgis = Double.parseDouble(stringYgis);
+                    if(!stringXgis.isEmpty() && !stringYgis.isEmpty()) {
+                        doubleXgis = Double.parseDouble(stringXgis);
+                        doubleYgis = Double.parseDouble(stringYgis);
 
-                    Spot house = new Spot(pcucode, type, stringVillCode, intHCode, doubleYgis, doubleXgis, addition);
-                    this.marked.put(type + "_" + house.getID(), house);
+                        Spot house = new Spot(pcucode, type, stringVillCode, intHCode, doubleXgis, doubleYgis, addition);
+                        this.marked.put(type + "_" + house.getID(), house);
+                    }
+                    else {
+                        Log.d("lat",stringXgis);
+                        Log.d("log",stringYgis);
+                    }
+
                 }
 
             } while (cursor.moveToNext());
@@ -166,14 +173,16 @@ public class FGDatabaseManager {
                 double doubleYgis = 0;
 
                 if (!this.isPointExist(stringXgis, stringYgis)) {
-                    Spot water = new Spot(pcucode, type, stringVillCode, intWaterNo, doubleYgis, doubleXgis, addition);
+                    Spot water = new Spot(pcucode, type, stringVillCode, intWaterNo, doubleXgis, doubleYgis, addition);
                     this.available.put(type + "_" + water.getID(), water);
                 } else {
-                    doubleXgis = Double.parseDouble(stringXgis);
-                    doubleYgis = Double.parseDouble(stringYgis);
+                    if(!stringXgis.isEmpty() && !stringYgis.isEmpty()) {
+                        doubleXgis = Double.parseDouble(stringXgis);
+                        doubleYgis = Double.parseDouble(stringYgis);
 
-                    Spot water = new Spot(pcucode, type, stringVillCode, intWaterNo, doubleYgis, doubleXgis, addition);
-                    this.marked.put(type + "_" + water.getID(), water);
+                        Spot water = new Spot(pcucode, type, stringVillCode, intWaterNo, doubleXgis, doubleYgis, addition);
+                        this.marked.put(type + "_" + water.getID(), water);
+                    }
                 }
 
             } while (cursor.moveToNext());
@@ -211,16 +220,18 @@ public class FGDatabaseManager {
                 double doubleYgis = 0;
 
                 if (!this.isPointExist(stringXgis, stringYgis)) {
-                    Spot temple = new Spot(pcucode, type, stringVillCode, intTempleNo, doubleYgis, doubleXgis, addition);
+                    Spot temple = new Spot(pcucode, type, stringVillCode, intTempleNo, doubleXgis, doubleYgis, addition);
 
                     this.available.put(type + "_" + temple.getID(), temple);
                 } else {
-                    doubleXgis = Double.parseDouble(stringXgis);
-                    doubleYgis = Double.parseDouble(stringYgis);
+                    if(!stringXgis.isEmpty() && !stringYgis.isEmpty()) {
+                        doubleXgis = Double.parseDouble(stringXgis);
+                        doubleYgis = Double.parseDouble(stringYgis);
 
-                    Spot temple = new Spot(pcucode, type, stringVillCode, intTempleNo, doubleYgis, doubleXgis, addition);
+                        Spot temple = new Spot(pcucode, type, stringVillCode, intTempleNo, doubleXgis, doubleYgis, addition);
 
-                    this.marked.put(type + "_" + temple.getID(), temple);
+                        this.marked.put(type + "_" + temple.getID(), temple);
+                    }
                 }
             } while (cursor.moveToNext());
         }
@@ -257,16 +268,18 @@ public class FGDatabaseManager {
                 double doubleYgis = 0;
 
                 if (!this.isPointExist(stringXgis, stringYgis)) {
-                    Spot school = new Spot(pcucode, type, stringVillCode, intSchoolNo, doubleYgis, doubleXgis, addition);
+                    Spot school = new Spot(pcucode, type, stringVillCode, intSchoolNo,  doubleXgis, doubleYgis,addition);
 
                     this.available.put(type + "_" + school.getID(), school);
                 } else {
-                    doubleXgis = Double.parseDouble(stringXgis);
-                    doubleYgis = Double.parseDouble(stringYgis);
+                    if(!stringXgis.isEmpty() && !stringYgis.isEmpty()) {
+                        doubleXgis = Double.parseDouble(stringXgis);
+                        doubleYgis = Double.parseDouble(stringYgis);
 
-                    Spot school = new Spot(pcucode, type, stringVillCode, intSchoolNo, doubleYgis, doubleXgis, addition);
+                        Spot school = new Spot(pcucode, type, stringVillCode, intSchoolNo, doubleXgis, doubleYgis, addition);
 
-                    this.marked.put(type + "_" + school.getID(), school);
+                        this.marked.put(type + "_" + school.getID(), school);
+                    }
                 }
             } while (cursor.moveToNext());
         }
@@ -305,16 +318,18 @@ public class FGDatabaseManager {
                 double doubleYgis = 0;
 
                 if (!this.isPointExist(stringXgis, stringYgis)) {
-                    Spot shop = new Spot(pcucode, type, stringVillCode, intShopNo, doubleYgis, doubleXgis, addition);
+                    Spot shop = new Spot(pcucode, type, stringVillCode, intShopNo, doubleXgis, doubleYgis,  addition);
 
                     this.available.put(type + "_" + shop.getID(), shop);
                 } else {
-                    doubleXgis = Double.parseDouble(stringXgis);
-                    doubleYgis = Double.parseDouble(stringYgis);
+                    if(!stringXgis.isEmpty() && !stringYgis.isEmpty()) {
+                        doubleXgis = Double.parseDouble(stringXgis);
+                        doubleYgis = Double.parseDouble(stringYgis);
 
-                    Spot shop = new Spot(pcucode, type, stringVillCode, intShopNo, doubleYgis, doubleXgis, addition);
+                        Spot shop = new Spot(pcucode, type, stringVillCode, intShopNo, doubleXgis, doubleYgis, addition);
 
-                    this.marked.put(type + "_" + shop.getID(), shop);
+                        this.marked.put(type + "_" + shop.getID(), shop);
+                    }
                 }
 
             } while (cursor.moveToNext());
@@ -353,17 +368,19 @@ public class FGDatabaseManager {
 
                 if (!this.isPointExist(stringXgis, stringYgis)) {
                     Log.d("TAG!", intPOINo + " not exist");
-                    Spot poi = new Spot(pcucode, type, stringVillCode, intPOINo, doubleYgis, doubleXgis, addition);
+                    Spot poi = new Spot(pcucode, type, stringVillCode, intPOINo, doubleXgis, doubleYgis, addition);
 
                     this.available.put(type + "_" + poi.getID(), poi);
                 } else {
                     Log.d("TAG!", intPOINo + " exist " + stringXgis + "," + stringYgis);
-                    doubleXgis = Double.parseDouble(stringXgis);
-                    doubleYgis = Double.parseDouble(stringYgis);
+                    if(!stringXgis.isEmpty() && !stringYgis.isEmpty()) {
+                        doubleXgis = Double.parseDouble(stringXgis);
+                        doubleYgis = Double.parseDouble(stringYgis);
 
-                    Spot poi = new Spot(pcucode, type, stringVillCode, intPOINo, doubleYgis, doubleXgis, addition);
+                        Spot poi = new Spot(pcucode, type, stringVillCode, intPOINo, doubleXgis, doubleYgis, addition);
 
-                    this.marked.put(type + "_" + poi.getID(), poi);
+                        this.marked.put(type + "_" + poi.getID(), poi);
+                    }
                 }
 
             } while (cursor.moveToNext());
@@ -399,16 +416,18 @@ public class FGDatabaseManager {
                 double doubleYgis = 0;
 
                 if (!this.isPointExist(stringXgis, stringYgis)) {
-                    Spot hospital = new Spot(pcucode, type, stringVillCode, intHospitalNo, doubleYgis, doubleXgis, addition);
+                    Spot hospital = new Spot(pcucode, type, stringVillCode, intHospitalNo, doubleXgis, doubleYgis, addition);
 
                     this.available.put(type + "_" + hospital.getID(), hospital);
                 } else {
-                    doubleXgis = Double.parseDouble(stringXgis);
-                    doubleYgis = Double.parseDouble(stringYgis);
+                    if(!stringXgis.isEmpty() && !stringYgis.isEmpty()) {
+                        doubleXgis = Double.parseDouble(stringXgis);
+                        doubleYgis = Double.parseDouble(stringYgis);
 
-                    Spot hospital = new Spot(pcucode, type, stringVillCode, intHospitalNo, doubleYgis, doubleXgis, addition);
+                        Spot hospital = new Spot(pcucode, type, stringVillCode, intHospitalNo, doubleXgis, doubleYgis, addition);
 
-                    this.marked.put(type + "_" + hospital.getID(), hospital);
+                        this.marked.put(type + "_" + hospital.getID(), hospital);
+                    }
                 }
 
             } while (cursor.moveToNext());
@@ -435,8 +454,10 @@ public class FGDatabaseManager {
         MARKER_TYPE type = Enum.valueOf(MARKER_TYPE.class, spot.getUid());
 
         ContentValues args = new ContentValues();
-        args.put("xgis", spot.getDoubleLong() + "");
-        args.put("ygis", spot.getDoubleLat() + "");
+//        args.put("xgis", spot.getDoubleLong() + "");
+//        args.put("ygis", spot.getDoubleLat() + "");
+        args.put("xgis", spot.getDoubleLat() + "");
+        args.put("ygis", spot.getDoubleLong() + "");
         args.put("dateupdate", DateTime.getCurrentDateTime());
 
 //		switch (type) {

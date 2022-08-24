@@ -172,15 +172,20 @@ public class EditDetailHouseFragmentActivity extends FFCFragmentActivity {
         Cursor c = getContentResolver().query(House.CONTENT_URI, projection,
                 selection, selectionArgs, null);
         if (c.moveToFirst()) {
-            String newlat = c.getString(c.getColumnIndex("ygis"));
-            String newlng = c.getString(c.getColumnIndex("xgis"));
+//            String newlat = c.getString(c.getColumnIndex("ygis"));
+//            String newlng = c.getString(c.getColumnIndex("xgis"));
+            String newlat = c.getString(c.getColumnIndex("xgis"));
+            String newlng = c.getString(c.getColumnIndex("ygis"));
+
             String temp[] = LatLng.split(",");
             onDatachangeFromMap = !newlat.equals(temp[0])
                     || !newlat.equals(temp[1]) ? true : false;
             LatLng = newlat + "," + newlng;
             temp = LatLng.split(",");
-            txtLat.setText(temp[1]);
-            txtLng.setText(temp[0]);
+//            txtLat.setText(temp[1]);
+//            txtLng.setText(temp[0]);
+            txtLat.setText(temp[0]);
+            txtLng.setText(temp[1]);
             onBackPess = false;
         }
     }
@@ -242,8 +247,11 @@ public class EditDetailHouseFragmentActivity extends FFCFragmentActivity {
             String lat = txtLat.getText().toString();
             String lng = txtLng.getText().toString();
             ContentValues contentValues = new ContentValues();
-            contentValues.put("xgis", lng);
-            contentValues.put("ygis", lat);
+//            contentValues.put("xgis", lng);
+//            contentValues.put("ygis", lat);
+            contentValues.put("xgis", lat);
+            contentValues.put("ygis", lng);
+
             String where = "hcode =?";
             String selectionArgs[] = {hcode};
             ContentResolver conResolver = getContentResolver();
@@ -286,8 +294,10 @@ public class EditDetailHouseFragmentActivity extends FFCFragmentActivity {
     private void clearData() {
         if (onDatachangeFromMap) {
             ContentValues contentValues = new ContentValues();
-            contentValues.put("xgis", oldLng);
-            contentValues.put("ygis", oldLat);
+//            contentValues.put("xgis", oldLng);
+//            contentValues.put("ygis", oldLat);
+            contentValues.put("xgis", oldLat);
+            contentValues.put("ygis", oldLng);
             String where = "hcode =?";
             String selectionArgs[] = {hcode};
             ContentResolver conResolver = getContentResolver();

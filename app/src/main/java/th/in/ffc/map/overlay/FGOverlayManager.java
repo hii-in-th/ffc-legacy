@@ -234,7 +234,7 @@ public class FGOverlayManager {
 //        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), false);
         Canvas canvas = new Canvas(bitmap2);
 
-        float default_width = 5f;
+        float default_width = 10f;
 
         final float densityMultiplier = context.getResources()
                 .getDisplayMetrics().density;

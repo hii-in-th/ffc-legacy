@@ -11,7 +11,7 @@
             android:layout_height="wrap_content"/>
 
     <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginTop="12dp"
@@ -21,25 +21,25 @@
 
         <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="4dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/app_name"
                 android:maxHeight="@dimen/sponsor.icon.size"
                 android:maxWidth="@dimen/sponsor.icon.size"
-                android:src="@drawable/ic_nectec"/>
+                android:src="@drawable/nstda_logo_tran"/>
 
         <ImageView
                 android:id="@+id/imageView1"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="4dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/app_name"
                 android:maxHeight="@dimen/sponsor.icon.size"
                 android:maxWidth="@dimen/sponsor.icon.size"
-                android:src="@drawable/ic_ssj_ubon"/>
+                android:src="@drawable/amed_logo_tran"/>
     </LinearLayout>
 
 </LinearLayout>

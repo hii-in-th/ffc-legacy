@@ -22,7 +22,7 @@
                 android:layout_margin="4dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/app_name"
-                android:src="@drawable/ic_nectec"/>
+                android:src="@drawable/nstda_logo_tran"/>
 
         <ImageView
                 android:id="@+id/imageView1"
@@ -31,7 +31,7 @@
                 android:layout_margin="4dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/app_name"
-                android:src="@drawable/ic_ssj_ubon"/>
+                android:src="@drawable/amed_logo_tran"/>
     </LinearLayout>
 
 </FrameLayout>

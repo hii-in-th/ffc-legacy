@@ -148,8 +148,10 @@ public class AddDetailHousePositionFragmentActivity extends FFCFragmentActivity 
         String[] selectionArgs = {hcode};
         Cursor c = getContentResolver().query(House.CONTENT_URI, projection, where, selectionArgs, null);
         if (c.moveToFirst()) {
-            String lat = c.getString(c.getColumnIndex("ygis"));
-            String lng = c.getString(c.getColumnIndex("xgis"));
+//            String lat = c.getString(c.getColumnIndex("ygis"));
+//            String lng = c.getString(c.getColumnIndex("xgis"));
+            String lat = c.getString(c.getColumnIndex("xgis"));
+            String lng = c.getString(c.getColumnIndex("ygis"));
             if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lng)) {
                 position = lat + "," + lng;
             }
@@ -179,8 +181,10 @@ public class AddDetailHousePositionFragmentActivity extends FFCFragmentActivity 
 
     private void commitByText() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("xgis", txtLng.getText().toString());
-        contentValues.put("ygis", txtLat.getText().toString());
+//        contentValues.put("xgis", txtLng.getText().toString());
+//        contentValues.put("ygis", txtLat.getText().toString());
+        contentValues.put("xgis", txtLat.getText().toString());
+        contentValues.put("ygis", txtLng.getText().toString());
         String where = "hcode =?";
         String selectionArgs[] = {hcode};
         ContentResolver conResolver = getContentResolver();
@@ -265,8 +269,10 @@ public class AddDetailHousePositionFragmentActivity extends FFCFragmentActivity 
         Cursor c = getContentResolver().query(House.CONTENT_URI, projection,
                 selection, selectionArgs, null);
         if (c.moveToFirst()) {
-            String newlat = c.getString(c.getColumnIndex("ygis"));
-            String newlng = c.getString(c.getColumnIndex("xgis"));
+//            String newlat = c.getString(c.getColumnIndex("ygis"));
+//            String newlng = c.getString(c.getColumnIndex("xgis"));
+            String newlat = c.getString(c.getColumnIndex("xgis"));
+            String newlng = c.getString(c.getColumnIndex("ygis"));
             boolean onDatachangeFromMap;
             if (!TextUtils.isEmpty(oldLat) && !TextUtils.isEmpty(oldLng)) {
                 onDatachangeFromMap = !newlat.equals(oldLat)

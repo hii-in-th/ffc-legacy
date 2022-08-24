@@ -180,8 +180,10 @@ public class EditPostionHomeFragmentActivity extends FFCFragmentActivity {
 
     private void upDateDBEditMode() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("xgis", newHousePosition.longitude);
-        contentValues.put("ygis", newHousePosition.latitude);
+//        contentValues.put("xgis", newHousePosition.longitude);
+//        contentValues.put("ygis", newHousePosition.latitude);
+        contentValues.put("xgis", newHousePosition.latitude);
+        contentValues.put("ygis", newHousePosition.longitude);
         String where = "hcode =?";
         String selectionArgs[] = {hcode};
         ContentResolver conResolver = getContentResolver();

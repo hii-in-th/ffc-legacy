@@ -79,26 +79,27 @@ public class PersonChronicFamily extends PersonFragment implements
         mForm.removeAllViewsInLayout();
 
         addTitle(R.string.familychronic);
+        if(!c.isClosed()) {
+            if (c != null && c.moveToFirst()) {
+                String lastChronic = "";
+                do {
+                    String chronic = c.getString(0);
+                    if (!lastChronic.equals(chronic)) {
+                        addSubject(chronic);
+                        addContentQuery(
+                                null,
+                                Diagnosis.NAME_TH,
+                                Uri.withAppendedPath(Diagnosis.CONTENT_URI, chronic),
+                                null);
 
-        if (c != null && c.moveToFirst()) {
-            String lastChronic = null;
-            do {
-                String chronic = c.getString(0);
-                if (!lastChronic.equals(chronic)) {
-                    addSubject(chronic);
-                    addContentQuery(
-                            null,
-                            Diagnosis.NAME_TH,
-                            Uri.withAppendedPath(Diagnosis.CONTENT_URI, chronic),
-                            null);
+                        lastChronic = chronic;
+                    }
+                    addSubContent(c.getString(1));
 
-                    lastChronic = chronic;
-                }
-                addSubContent(c.getString(1));
+                } while (c.moveToNext());
 
-            } while (c.moveToNext());
-
-            c.close();
+//                c.close();
+            }
         }
 
     }

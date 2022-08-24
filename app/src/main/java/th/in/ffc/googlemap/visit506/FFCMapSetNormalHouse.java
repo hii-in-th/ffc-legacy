@@ -31,8 +31,10 @@ public class FFCMapSetNormalHouse {
         if (c.moveToFirst()) {
             do {
                 String hcode = c.getString(c.getColumnIndex("hcode"));
-                String lat = c.getString(c.getColumnIndex("ygis"));
-                String lng = c.getString(c.getColumnIndex("xgis"));
+//                String lat = c.getString(c.getColumnIndex("ygis"));
+//                String lng = c.getString(c.getColumnIndex("xgis"));
+                String lat = c.getString(c.getColumnIndex("xgis"));
+                String lng = c.getString(c.getColumnIndex("ygis"));
                 String hno = c.getString(c.getColumnIndex("hno"));
                 if (TextUtils.isEmpty(hashHcode.get(hcode))) {
                     if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lng)) {
